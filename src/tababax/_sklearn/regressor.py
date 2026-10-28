@@ -58,28 +58,9 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         Z-score threshold for outlier detection and clipping. Values with
         :math:`|z| > \text{threshold}` are considered outliers.
 
-    batch_size : Optional[int], default=8
-        Batch size for inference. If None, all ensemble members are processed in a single batch.
-        Adjust this parameter based on available memory. Lower values use less memory but may
-        be slower.
-
-    kv_cache : bool or str, default=False
-        Controls caching of training data computations to speed up subsequent
-        ``predict`` calls. The cache is built during ``fit()``.
-
-        - False: No caching.
-        - True or "kv": Cache key-value projections from both column embedding
-          and ICL transformer layers. Fast inference but memory-heavy for large
-          training sets.
-        - "repr": Cache column embedding KV projections and row interaction outputs
-          (representations). Uses ~24x less memory than "kv" for the ICL part,
-          at the cost of re-running the ICL transformer at predict time.
-
-        The cache retains whatever dtype the model produced during ``fit()``
-        (float16 when AMP is active, float32 otherwise). If the cache is later
-        loaded on a device without AMP, the tensors are automatically upcast to
-        float32 to avoid dtype-mismatch errors. With AMP enabled, reduced-precision
-        caches are kept on CPU, CUDA, XPU, and MPS.
+    batch_size : Optional[int], default=1
+        Number of ensemble members forwarded together. ``None`` sends every member in one batch.
+        The default is 1.
 
     model_path : Optional[str or Path], default=None
         Path to the pre-trained model checkpoint file.
@@ -96,10 +77,9 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         Whether to allow automatic download if the pretrained checkpoint cannot be found at the
         specified `model_path`.
 
-    checkpoint_version : str, default='tabicl-regressor-v2-20260212.ckpt'
-        Specifies which version of the pre-trained model checkpoint to use when `model_path`
-        is `None` or points to a non-existent file (and `allow_auto_download` is true).
-        Checkpoints are downloaded from https://huggingface.co/jingang/TabICL.
+    checkpoint_version : str or None, default=None
+        Optional checkpoint file name used only when `model_path` is missing and
+        `allow_auto_download` is true. The default does not select a checkpoint.
 
     device : Optional[str or torch.device], default=None
         Device to use for inference. If None, automatically selects CUDA when
@@ -132,7 +112,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
             the test set and does not account for KV-cache scenarios. If it is suboptimal for your workload,
             set it explicitly.
 
-    use_fa3 : bool or "auto", default="auto"
+    use_fa3 : bool or "auto", default=False
         Whether to use Flash Attention 3 that can speed up inference for large datasets on NVIDIA Hopper
         GPUs like H100. Only effective on CUDA when FA3 is installed; a no-op on CPU / MPS / XPU.
         - True / False: force on / off.
@@ -248,14 +228,13 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         norm_methods: Optional[str | List[str]] = None,
         feat_shuffle_method: str = "latin",
         outlier_threshold: float = 4.0,
-        batch_size: Optional[int] = 8,
-        kv_cache: bool | str = False,
+        batch_size: Optional[int] = 1,
         model_path: Optional[str | Path] = None,
         allow_auto_download: bool = True,
-        checkpoint_version: str = "tabicl-regressor-v2-20260212.ckpt",
+        checkpoint_version: Optional[str] = None,
         device: Optional[str | torch.device] = None,
         use_amp: bool | str = "auto",
-        use_fa3: bool | str = "auto",
+        use_fa3: bool | str = False,
         offload_mode: str | bool = "auto",
         disk_offload_dir: Optional[str] = None,
         random_state: int | None = 42,
@@ -268,7 +247,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         self.feat_shuffle_method = feat_shuffle_method
         self.outlier_threshold = outlier_threshold
         self.batch_size = batch_size
-        self.kv_cache = kv_cache
+        self.kv_cache = False
         self.model_path = model_path
         self.allow_auto_download = allow_auto_download
         self.checkpoint_version = checkpoint_version

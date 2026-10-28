@@ -29,7 +29,7 @@ TabAbaxClassifier(
 )
 ```
 
-The official checkpoints will be published separately on Hugging Face. Until that repository exists, omitting `model_path` still falls back to the loader's current Hugging Face id, `jingang/TabICL`. Use `model_path` for this release.
+The official checkpoints will be published separately on Hugging Face. This release does not select a checkpoint on its own. Pass `model_path`.
 
 ## Usage
 
@@ -52,17 +52,7 @@ reg.fit(X_train, y_train)
 reg.predict(X_test)
 ```
 
-Inputs may be NumPy arrays or pandas DataFrames. String and categorical columns are encoded inside `fit`. The default prediction uses an ensemble of dataset views; `n_estimators=1` is a single forward pass.
-
-Repeated `predict` calls on the same training table can reuse cached projections:
-
-```python
-clf = TabAbaxClassifier(
-    model_path="path/to/classifier.ckpt",
-    allow_auto_download=False,
-    kv_cache=True,
-)
-```
+Inputs may be NumPy arrays or pandas DataFrames. String and categorical columns are encoded inside `fit`. The default prediction uses an ensemble of dataset views; `n_estimators=1` is a single forward pass. Ensemble members are forwarded one at a time unless `batch_size` is raised.
 
 ## AutoGluon and TabArena
 
