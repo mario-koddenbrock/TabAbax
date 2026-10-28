@@ -1,0 +1,92 @@
+# TabAbax
+
+Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. `predict` runs one forward pass of a pretrained model. The model weights are not updated.
+
+This repository is the inference package. It is what AutoGluon and TabArena import. It does not contain pre-training, fine-tuning, data priors, or checkpoints.
+
+## Install
+
+Python >= 3.10.
+
+```bash
+pip install -e .
+```
+
+From a private Git checkout, the same install works over SSH:
+
+```bash
+pip install "git+ssh://git@github.com/OWNER/TabAbax.git"
+```
+
+Replace `OWNER` after the private repository exists.
+
+## Weights
+
+Checkpoints are not in this repository. Pass a local file and refuse any download:
+
+```python
+TabAbaxClassifier(
+    model_path="path/to/classifier.ckpt",
+    allow_auto_download=False,
+)
+```
+
+The official checkpoints will be published separately on Hugging Face. Until that repository exists, omitting `model_path` still falls back to the loader's current Hugging Face id, `jingang/TabICL`. Use `model_path` for this release.
+
+## Usage
+
+```python
+from tababax import TabAbaxClassifier, TabAbaxRegressor
+
+clf = TabAbaxClassifier(
+    model_path="path/to/classifier.ckpt",
+    allow_auto_download=False,
+)
+clf.fit(X_train, y_train)
+clf.predict(X_test)
+clf.predict_proba(X_test)
+
+reg = TabAbaxRegressor(
+    model_path="path/to/regressor.ckpt",
+    allow_auto_download=False,
+)
+reg.fit(X_train, y_train)
+reg.predict(X_test)
+```
+
+Inputs may be NumPy arrays or pandas DataFrames. String and categorical columns are encoded inside `fit`. The default prediction uses an ensemble of dataset views; `n_estimators=1` is a single forward pass.
+
+Repeated `predict` calls on the same training table can reuse cached projections:
+
+```python
+clf = TabAbaxClassifier(
+    model_path="path/to/classifier.ckpt",
+    allow_auto_download=False,
+    kv_cache=True,
+)
+```
+
+## AutoGluon and TabArena
+
+The integration surface is the two estimators:
+
+- `tababax.TabAbaxClassifier`: `fit`, `predict`, `predict_proba`
+- `tababax.TabAbaxRegressor`: `fit`, `predict`
+
+No extra server or training entry point is required. A caller constructs the estimator, passes `model_path`, and uses the scikit-learn API.
+
+## Layout
+
+```
+src/tababax/_model/     architecture and in-context forward pass
+src/tababax/_sklearn/   estimators, preprocessing, checkpoint loading
+tests/test_import.py          public import check
+```
+
+`_model/learning.py` is the in-context forward path. It is not a pre-training loop.
+
+## License
+
+The draft product terms are in `LICENSE`. They allow internal evaluation and non-commercial research. Commercial and production use needs a separate written agreement. The contact and the final text will be added before a public release.
+
+Portions of the source are derived from TabICL and remain under the BSD 3-Clause License. That notice is in `NOTICE` and is kept with the source.

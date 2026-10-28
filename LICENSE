@@ -1,0 +1,34 @@
+TabAbax Inference License
+Template 0.1 — 28 October 2026
+
+This text is a draft for the private review repository. TabAbax will replace it before any public release. It is not a grant of a commercial production license.
+
+Copyright (c) 2026 TabAbax. All rights reserved.
+
+1. Scope
+
+This license covers the inference source code in this repository (the "Software"). Model checkpoints are not in this repository and are not licensed by this file. A separate checkpoint license will be published with the Hugging Face release.
+
+2. Evaluation grant
+
+Subject to this license, TabAbax grants a limited, non-exclusive, non-transferable, revocable right to use, copy, and modify the Software for internal evaluation and for non-commercial research.
+
+3. Commercial use
+
+Production deployment, offering the Software or its predictions as a product or service, and any other commercial use require a separate written agreement from TabAbax. This template does not grant that right.
+
+4. Conditions
+
+Keep this license and the NOTICE file with every copy of the Software. Do not remove copyright notices. Do not use the name TabAbax to endorse a product without prior written permission.
+
+5. Upstream code
+
+Portions of the Software are derived from TabICL, Copyright (c) 2025, Soda team @ Inria, and were received under the BSD 3-Clause License. Those portions remain subject to that license. The required notice is reproduced in NOTICE. This template does not remove it.
+
+6. No warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL TABABAX BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. Contact
+
+The commercial-licensing contact will be added before the public release.
