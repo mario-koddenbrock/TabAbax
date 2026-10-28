@@ -15,10 +15,8 @@ pip install -e .
 From a private Git checkout, the same install works over SSH:
 
 ```bash
-pip install "git+ssh://git@github.com/OWNER/TabAbax.git"
+pip install "git+https://github.com/tababax-research/TabAbax.git"
 ```
-
-Replace `OWNER` after the private repository exists.
 
 ## Weights
 
