@@ -56,7 +56,7 @@ class FourierFeatureEmbedding(nn.Module):
             Shape (..., embed_dim), normally (..., 128).
         """
 
-        # TabAbax uses -100 to mark the reserved CLS positions.
+        # Tababax uses -100 to mark the reserved CLS positions.
         skip_mask = (src == self.skip_value).all(dim=-1)
 
         # Phase and trigonometric functions must remain FP32.

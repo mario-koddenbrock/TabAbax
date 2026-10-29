@@ -1,4 +1,4 @@
-# TabAbax
+# Tababax
 
 Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. `predict` runs one forward pass of a pretrained model. The model weights are not updated.
 
@@ -6,11 +6,11 @@ This repository is the inference package. It is what AutoGluon and TabArena impo
 
 ## Results
 
-TabAbax predicts on unseen tabular datasets in one forward pass, without task-specific training.
+Tababax predicts on unseen tabular datasets in one forward pass, without task-specific training.
 
 ![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
 
-On the full BeyondArena suite (142 datasets: 98 classification and 44 regression), TabAbax reaches an Elo of 1,238 and ranks 10th of 41 methods.
+On the full BeyondArena suite (142 datasets: 98 classification and 44 regression), Tababax reaches an Elo of 1,238 and ranks 10th of 41 methods.
 
 ## Install
 
@@ -32,7 +32,7 @@ pip install -e .
 From the private GitHub repository:
 
 ```bash
-pip install "git+https://github.com/tababax-research/TabAbax.git"
+pip install "git+https://github.com/tababax-research/Tababax.git"
 ```
 
 ## Weights
@@ -41,13 +41,13 @@ Leave `model_path` unset. The first `fit` downloads the public checkpoint from [
 
 | Estimator | File |
 | --- | --- |
-| `TabAbaxClassifier` | `tababax-classifier.ckpt` |
-| `TabAbaxRegressor` | `tababax-regressor.ckpt` |
+| `TababaxClassifier` | `tababax-classifier.ckpt` |
+| `TababaxRegressor` | `tababax-regressor.ckpt` |
 
 The checkpoints on [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax) are licensed under CC-BY-NC-4.0. That license is separate from the Apache-2.0 terms for this source code. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
 ```python
-TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
+TababaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
 ```
 
 ## Usage
@@ -55,14 +55,14 @@ TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=Fals
 The defaults are the recommended settings. No checkpoint path is required.
 
 ```python
-from tababax import TabAbaxClassifier, TabAbaxRegressor
+from tababax import TababaxClassifier, TababaxRegressor
 
-clf = TabAbaxClassifier()
+clf = TababaxClassifier()
 clf.fit(X_train, y_train)
 clf.predict(X_test)
 clf.predict_proba(X_test)
 
-reg = TabAbaxRegressor()
+reg = TababaxRegressor()
 reg.fit(X_train, y_train)
 reg.predict(X_test)
 ```
@@ -88,8 +88,8 @@ Recommended defaults:
 
 The integration surface is the two estimators:
 
-- `tababax.TabAbaxClassifier`: `fit`, `predict`, `predict_proba`
-- `tababax.TabAbaxRegressor`: `fit`, `predict`
+- `tababax.TababaxClassifier`: `fit`, `predict`, `predict_proba`
+- `tababax.TababaxRegressor`: `fit`, `predict`
 
 No extra server or training entry point is required. A caller constructs the estimator with the defaults above and uses the scikit-learn API. Pass `model_path` only when the checkpoint should come from a local file.
 

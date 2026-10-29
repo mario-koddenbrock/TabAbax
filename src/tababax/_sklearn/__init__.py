@@ -1,4 +1,4 @@
-"""Private. Access estimators via ``from tababax import TabAbaxClassifier, TabAbaxRegressor``."""
+"""Private. Access estimators via ``from tababax import TababaxClassifier, TababaxRegressor``."""
 
-from .classifier import TabAbaxClassifier
-from .regressor import TabAbaxRegressor
+from .classifier import TababaxClassifier
+from .regressor import TababaxRegressor

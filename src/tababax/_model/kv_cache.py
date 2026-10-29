@@ -196,10 +196,10 @@ class KVCache:
 
 
 @dataclass
-class TabAbaxCache:
-    """Top-level cache container for the entire TabAbax model.
+class TababaxCache:
+    """Top-level cache container for the entire Tababax model.
 
-    This aggregates caches for different components of TabAbax:
+    This aggregates caches for different components of Tababax:
 
     - ColEmbedding cache (for ISAB blocks in column embedding)
     - ICLearning cache (for Encoder layers in the ICL transformer)
@@ -279,7 +279,7 @@ class TabAbaxCache:
 
         return col_empty and row_empty and icl_empty
 
-    def slice_batch(self, start: int, end: int) -> TabAbaxCache:
+    def slice_batch(self, start: int, end: int) -> TababaxCache:
         """Slice this cache along the batch dimension (dim 0).
 
         Parameters
@@ -292,11 +292,11 @@ class TabAbaxCache:
 
         Returns
         -------
-        TabAbaxCache
+        TababaxCache
             New cache with sliced tensors (views of the original tensors).
         """
         indices = slice(start, end)
-        return TabAbaxCache(
+        return TababaxCache(
             col_cache=self.col_cache[indices] if self.col_cache else KVCache(),
             row_repr=self.row_repr[indices] if self.row_repr is not None else None,
             icl_cache=self.icl_cache[indices] if self.icl_cache else KVCache(),
@@ -304,7 +304,7 @@ class TabAbaxCache:
             num_classes=self.num_classes,
         )
 
-    def to(self, device, dtype=None) -> TabAbaxCache:
+    def to(self, device, dtype=None) -> TababaxCache:
         """Move all cached tensors to the given device and optionally cast dtype.
 
         Parameters
@@ -317,10 +317,10 @@ class TabAbaxCache:
 
         Returns
         -------
-        TabAbaxCache
+        TababaxCache
             New cache with all tensors on the target device.
         """
-        return TabAbaxCache(
+        return TababaxCache(
             col_cache=self.col_cache.to(device, dtype=dtype) if self.col_cache else KVCache(),
             row_repr=self.row_repr.to(device=device, dtype=dtype) if self.row_repr is not None else None,
             icl_cache=self.icl_cache.to(device, dtype=dtype) if self.icl_cache else KVCache(),
@@ -329,12 +329,12 @@ class TabAbaxCache:
         )
 
     @staticmethod
-    def concat(caches: List[TabAbaxCache], dim: int = 0) -> TabAbaxCache:
-        """Concatenate multiple TabAbaxCache objects along the batch dimension.
+    def concat(caches: List[TababaxCache], dim: int = 0) -> TababaxCache:
+        """Concatenate multiple TababaxCache objects along the batch dimension.
 
         Parameters
         ----------
-        caches : List[TabAbaxCache]
+        caches : List[TababaxCache]
             Caches to concatenate.
 
         dim : int, default=0
@@ -342,7 +342,7 @@ class TabAbaxCache:
 
         Returns
         -------
-        TabAbaxCache
+        TababaxCache
             New cache with concatenated ``col_cache`` and ``icl_cache`` tensors.
         """
         col_caches = [c.col_cache for c in caches if c.col_cache is not None]
@@ -353,7 +353,7 @@ class TabAbaxCache:
         train_size = caches[0].train_shape[1]
         n_features = caches[0].train_shape[2]
 
-        return TabAbaxCache(
+        return TababaxCache(
             col_cache=KVCache.concat(col_caches, dim=dim) if col_caches else KVCache(),
             row_repr=torch.cat(row_reprs, dim=dim) if row_reprs else None,
             icl_cache=KVCache.concat(icl_caches, dim=dim) if icl_caches else KVCache(),

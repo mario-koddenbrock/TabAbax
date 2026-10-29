@@ -109,7 +109,7 @@ class TransformToNumerical(TransformerMixin, BaseEstimator):
             # For compatibility with sklearn's tests
             if issparse(X):
                 raise TypeError(
-                    "Sparse input is not supported by TabAbax. "
+                    "Sparse input is not supported by Tababax. "
                     "Convert X to a dense array, e.g. with X.toarray()."
                 )
             X_arr = np.asarray(X)
@@ -119,7 +119,7 @@ class TransformToNumerical(TransformerMixin, BaseEstimator):
                 # Preserve the original exception type so that, e.g., object arrays
                 # holding non-string/non-number elements still raise a TypeError.
                 raise type(e)(
-                    "NumPy arrays passed to TabAbax must be castable to a numeric dtype, "
+                    "NumPy arrays passed to Tababax must be castable to a numeric dtype, "
                     f"but casting to float64 failed with: {e}. "
                     "If your data contains categorical or string columns, pass it as a pandas "
                     "DataFrame instead, so each column can be typed and preprocessed accordingly."
@@ -917,7 +917,7 @@ class Shuffler:
 
 
 class EnsembleGenerator(TransformerMixin, BaseEstimator):
-    """Generate ensemble variants for robust tabular prediction with TabAbax.
+    """Generate ensemble variants for robust tabular prediction with Tababax.
 
     This class creates diverse data variants through:
 

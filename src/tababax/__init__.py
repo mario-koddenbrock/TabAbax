@@ -4,10 +4,10 @@ import os
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
 from ._model import InferenceConfig
-from ._sklearn import TabAbaxClassifier, TabAbaxRegressor
+from ._sklearn import TababaxClassifier, TababaxRegressor
 
 __all__ = [
-    "TabAbaxClassifier",
-    "TabAbaxRegressor",
+    "TababaxClassifier",
+    "TababaxRegressor",
     "InferenceConfig",
 ]

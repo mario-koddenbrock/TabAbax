@@ -1,6 +1,6 @@
 def test_public_api():
-    from tababax import TabAbaxClassifier, TabAbaxRegressor, InferenceConfig
+    from tababax import TababaxClassifier, TababaxRegressor, InferenceConfig
 
-    assert TabAbaxClassifier.__name__ == "TabAbaxClassifier"
-    assert TabAbaxRegressor.__name__ == "TabAbaxRegressor"
+    assert TababaxClassifier.__name__ == "TababaxClassifier"
+    assert TababaxRegressor.__name__ == "TababaxRegressor"
     assert InferenceConfig is not None

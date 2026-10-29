@@ -1,9 +1,9 @@
 """Private. Users should not import from this subpackage.
 
-``TabAbax`` is wrapped by :class:`tababax.TabAbaxClassifier`
-and :class:`tababax.TabAbaxRegressor`.
+``Tababax`` is wrapped by :class:`tababax.TababaxClassifier`
+and :class:`tababax.TababaxRegressor`.
 ``InferenceConfig`` is re-exported at :class:`tababax.InferenceConfig`.
 """
 
-from .model import TabAbax
+from .model import Tababax
 from .inference_config import InferenceConfig

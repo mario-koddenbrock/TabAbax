@@ -16,7 +16,7 @@ from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 
 from tababax import InferenceConfig
-from tababax._model.model import TabAbax
+from tababax._model.model import Tababax
 from tababax._torch_devices import resolve_torch_device
 
 
@@ -38,11 +38,11 @@ def _check_version_compatibility(metadata: dict) -> None:
             )
 
 
-class TabAbaxEstimator(BaseEstimator):
-    """Base class for TabAbax scikit-learn estimators.
+class TababaxEstimator(BaseEstimator):
+    """Base class for Tababax scikit-learn estimators.
 
-    Provides shared functionality for both :class:`TabAbaxClassifier` and
-    :class:`TabAbaxRegressor`:
+    Provides shared functionality for both :class:`TababaxClassifier` and
+    :class:`TababaxRegressor`:
 
     - Device resolution and inference configuration
     - Model persistence (pickle serialization/deserialization)
@@ -50,7 +50,7 @@ class TabAbaxEstimator(BaseEstimator):
       and training data
 
     This class should not be instantiated directly. Use
-    :class:`TabAbaxClassifier` or :class:`TabAbaxRegressor` instead.
+    :class:`TababaxClassifier` or :class:`TababaxRegressor` instead.
     """
 
     def _more_tags(self):
@@ -327,7 +327,7 @@ class TabAbaxEstimator(BaseEstimator):
         # Reload or reconstruct model
         if model_state_dict is not None and hasattr(self, "model_config_"):
             # Model weights were saved and reconstruct without checkpoint
-            self.model_ = TabAbax(**self.model_config_)
+            self.model_ = Tababax(**self.model_config_)
             self.model_.load_state_dict(model_state_dict)
             self.model_.eval()
         else:
@@ -359,7 +359,7 @@ class TabAbaxEstimator(BaseEstimator):
             File path to save to.
 
         save_model_weights : bool, default=False
-            If True, include the pretrained TabAbax model weights in the file,
+            If True, include the pretrained Tababax model weights in the file,
             making it fully self-contained. If False (default), model weights
             are reloaded from the checkpoint on load, resulting in a smaller file.
 
@@ -407,7 +407,7 @@ class TabAbaxEstimator(BaseEstimator):
             del self._save_training_data
 
     @classmethod
-    def load(cls, path: str | Path, device: Optional[str | torch.device] = None) -> TabAbaxEstimator:
+    def load(cls, path: str | Path, device: Optional[str | torch.device] = None) -> TababaxEstimator:
         """Load a fitted estimator from a file.
 
         Parameters
@@ -422,7 +422,7 @@ class TabAbaxEstimator(BaseEstimator):
 
         Returns
         -------
-        estimator : TabAbaxEstimator
+        estimator : TababaxEstimator
             The loaded fitted estimator.
         """
         with open(path, "rb") as f:

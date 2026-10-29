@@ -1,14 +1,14 @@
 [project]
 name = "tababax"
 dynamic = ["version"]
-description = "TabAbax: sklearn estimators for tabular classification and regression"
+description = "Tababax: sklearn estimators for tabular classification and regression"
 readme = "README.md"
 authors = [
-    { name = "TabAbax" },
+    { name = "Tababax" },
 ]
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-keywords = ["tabular data", "TabAbax"]
+keywords = ["tabular data", "Tababax"]
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Intended Audience :: Science/Research",
