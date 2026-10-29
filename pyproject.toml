@@ -10,7 +10,7 @@ license = { file = "LICENSE" }
 requires-python = ">=3.10"
 keywords = ["tabular data", "TabAbax"]
 classifiers = [
-    "License :: Other/Proprietary License",
+    "License :: OSI Approved :: Apache Software License",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering",

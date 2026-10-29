@@ -4,6 +4,14 @@ Scikit-learn estimators for tabular classification and regression. `fit` stores 
 
 This repository is the inference package. It is what AutoGluon and TabArena import. It does not contain pre-training, fine-tuning, data priors, or checkpoints.
 
+## Results
+
+TabAbax predicts on unseen tabular datasets in one forward pass, without task-specific training.
+
+![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
+
+On the full BeyondArena suite (142 datasets: 98 classification and 44 regression), TabAbax reaches an Elo of 1,238 and ranks 10th of 41 methods.
+
 ## Install
 
 Python >= 3.10.
@@ -36,7 +44,7 @@ Leave `model_path` unset. The first `fit` downloads the public checkpoint from [
 | `TabAbaxClassifier` | `tababax-classifier.ckpt` |
 | `TabAbaxRegressor` | `tababax-regressor.ckpt` |
 
-Those weights are publicly available for non-commercial use. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
+The checkpoints on [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax) are licensed under CC-BY-NC-4.0. That license is separate from the Apache-2.0 terms for this source code. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
 ```python
 TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
@@ -97,4 +105,6 @@ tests/test_import.py          public import check
 
 ## License
 
-The draft product terms are in `LICENSE`. They allow internal evaluation and non-commercial research. Commercial and production use needs a separate written agreement. The contact and the final text will be added before a public release.
+The inference source in this repository is licensed under Apache-2.0. See `LICENSE`.
+
+The pretrained weights downloaded by default are not covered by that license. They are published at [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax) under CC-BY-NC-4.0 and are restricted to non-commercial use. Commercial use of those weights is not permitted.
