@@ -8,11 +8,11 @@ from .embedding import ColEmbedding, ColInteraction
 from .interaction import RowInteraction
 from .learning import ICLearning
 from .quantile_dist import QuantileToDistribution
-from .kv_cache import TababaxCache
+from .kv_cache import TabAbaxCache
 from .inference_config import InferenceConfig
 
 
-class Tababax(nn.Module):
+class TabAbax(nn.Module):
     """Transformer for in-context learning on one table.
 
     The module reads a table in three stages:
@@ -22,8 +22,8 @@ class Tababax(nn.Module):
     3. Dataset-wise in-context learning predicts from the labeled rows
 
     Do not construct this module directly. Use
-    :class:`tababax.TababaxClassifier` or
-    :class:`tababax.TababaxRegressor`, which preprocess features
+    :class:`tababax.TabAbaxClassifier` or
+    :class:`tababax.TabAbaxRegressor`, which preprocess features
     and postprocess predictions.
 
     Parameters
@@ -326,7 +326,7 @@ class Tababax(nn.Module):
         )
 
         # KV cache for efficient inference
-        self._cache: Optional[TababaxCache] = None
+        self._cache: Optional[TabAbaxCache] = None
 
     @property
     def has_cache(self) -> bool:
@@ -664,7 +664,7 @@ class Tababax(nn.Module):
         softmax_temperature: float = 0.9,
         use_cache: bool = False,
         store_cache: bool = True,
-        cache: Optional[TababaxCache] = None,
+        cache: Optional[TabAbaxCache] = None,
         cache_mode: str = "kv",
         inference_config: Optional[InferenceConfig] = None,
     ) -> Optional[Tensor]:
@@ -716,7 +716,7 @@ class Tababax(nn.Module):
         store_cache : bool, default=True
             Whether to store computed values in cache.
 
-        cache : Optional[TababaxCache], default=None
+        cache : Optional[TabAbaxCache], default=None
             External cache to use for inference. If provided, equivalent to
             setting use_cache=True and store_cache=False, but uses the provided
             cache instead of the model's internal self._cache.
@@ -767,7 +767,7 @@ class Tababax(nn.Module):
 
             # Initialize cache based on training data
             num_classes = len(torch.unique(y_train[0])) if self.max_classes > 0 else 0
-            self._cache = TababaxCache(train_shape=X_train.shape, num_classes=num_classes)
+            self._cache = TabAbaxCache(train_shape=X_train.shape, num_classes=num_classes)
 
             if X_test is None:
                 X = X_train
@@ -848,7 +848,7 @@ class Tababax(nn.Module):
         alphas: Optional[List[float]] = None,
         use_cache: bool = False,
         store_cache: bool = True,
-        cache: Optional[TababaxCache] = None,
+        cache: Optional[TabAbaxCache] = None,
         cache_mode: str = "kv",
         inference_config: Optional[InferenceConfig] = None,
     ) -> Optional[Tensor]:
@@ -884,7 +884,7 @@ class Tababax(nn.Module):
         store_cache : bool, default=True
             Whether to store computed values in cache.
 
-        cache : Optional[TababaxCache], default=None
+        cache : Optional[TabAbaxCache], default=None
             External cache to use for inference. If provided, equivalent to
             setting use_cache=True and store_cache=False.
 

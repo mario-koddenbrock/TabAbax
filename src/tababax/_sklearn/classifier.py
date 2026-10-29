@@ -17,19 +17,19 @@ from sklearn.preprocessing import LabelEncoder
 from huggingface_hub import hf_hub_download
 from huggingface_hub.utils import LocalEntryNotFoundError
 
-from .base import TababaxEstimator
+from .base import TabAbaxEstimator
 from .preprocessing import TransformToNumerical, EnsembleGenerator
 from .sklearn_utils import validate_data, _num_samples
 
 from tababax import InferenceConfig
-from tababax._model.model import Tababax
-from tababax._model.kv_cache import TababaxCache
+from tababax._model.model import TabAbax
+from tababax._model.kv_cache import TabAbaxCache
 
 
-class TababaxClassifier(ClassifierMixin, TababaxEstimator):
-    """Tababax classifier with a scikit-learn interface.
+class TabAbaxClassifier(ClassifierMixin, TabAbaxEstimator):
+    """TabAbax classifier with a scikit-learn interface.
 
-    This classifier applies Tababax to tabular classification, using an ensemble
+    This classifier applies TabAbax to tabular classification, using an ensemble
     of transformed dataset views to improve predictions. The ensemble members are
     created by applying different normalization methods, feature permutations,
     and class label shifts.
@@ -95,7 +95,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         - If provided and the file exists, it's loaded directly.
         - If provided but the file doesn't exist and `allow_auto_download` is true, the file
           named by `checkpoint_version` is downloaded from Hugging Face Hub
-          (repo: 'tababax-ai/tababax') to this path.
+          (repo: 'tababax-ai/TabAbax') to this path.
         - If `None` (default), `checkpoint_version` is downloaded from that repository and
           cached in the default Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
 
@@ -104,7 +104,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         specified `model_path`.
 
     checkpoint_version : str, default="tababax-classifier.ckpt"
-        Checkpoint file name on `tababax-ai/tababax`. Used when `model_path` is
+        Checkpoint file name on `tababax-ai/TabAbax`. Used when `model_path` is
         missing or does not exist and `allow_auto_download` is true.
 
     device : Optional[str or torch.device], default=None
@@ -179,10 +179,10 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
 
     inference_config : Optional[InferenceConfig | Dict[str, Dict[str, Any]]], default=None
         Configuration for inference settings. This parameter provides fine-grained control
-        over the three transformers in Tababax (column-wise, row-wise, and in-context learning).
+        over the three transformers in TabAbax (column-wise, row-wise, and in-context learning).
 
         WARNING: This parameter should only be used by advanced users who understand the internal
-        architecture of Tababax and need precise control over inference.
+        architecture of TabAbax and need precise control over inference.
 
         When None (default):
             - A new InferenceConfig object is created with default settings
@@ -228,8 +228,8 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
     ensemble_generator_ : EnsembleGenerator
         Fitted ensemble generator that creates multiple dataset views.
 
-    model_ : Tababax
-        The loaded Tababax model used for predictions.
+    model_ : TabAbax
+        The loaded TabAbax model used for predictions.
 
     model_path_ : str
         Path to the loaded checkpoint file.
@@ -247,7 +247,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         The resolved caching mode, set during ``fit()`` based on the ``kv_cache``
         init parameter. One of ``"kv"``, ``"repr"``, or ``None`` (no caching).
 
-    model_kv_cache_ : OrderedDict[str, TababaxCache] or None
+    model_kv_cache_ : OrderedDict[str, TabAbaxCache] or None
         Pre-computed KV caches for training data, keyed by normalization method.
         Created during ``fit()`` when ``kv_cache`` is enabled. When set,
         ``predict_proba()`` reuses the cached key-value projections instead of
@@ -320,7 +320,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
             If a checkpoint cannot be found or downloaded based on the settings.
         """
 
-        repo_id = "tababax-ai/tababax"
+        repo_id = "tababax-ai/TabAbax"
         filename = self.checkpoint_version
         model_path_ = Path(self.model_path) if isinstance(self.model_path, str) else self.model_path
 
@@ -330,7 +330,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         elif not filename:
             raise ValueError(
                 "No checkpoint was given. Pass model_path, or leave checkpoint_version at its default "
-                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/tababax)."
+                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/TabAbax)."
             )
         elif self.model_path is None:
             try:
@@ -362,12 +362,12 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         assert "state_dict" in checkpoint, "The checkpoint doesn't contain the model state."
 
         self.model_path_ = model_path_
-        self.model_ = Tababax(**checkpoint["config"])
+        self.model_ = TabAbax(**checkpoint["config"])
         self.model_config_ = checkpoint["config"]
         self.model_.load_state_dict(checkpoint["state_dict"])
         self.model_.eval()
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> TababaxClassifier:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> TabAbaxClassifier:
         """Fit the classifier to training data.
 
         Prepares the model for prediction by:
@@ -375,7 +375,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         1. Encoding class labels using LabelEncoder
         2. Converting input features to numerical values
         3. Fitting the ensemble generator to create transformed dataset views
-        4. Loading the pre-trained Tababax model
+        4. Loading the pre-trained TabAbax model
         5. Optionally pre-computing KV caches for training data to speed up inference
            (controlled by the ``kv_cache`` init parameter)
 
@@ -392,7 +392,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
 
         Returns
         -------
-        self : TababaxClassifier
+        self : TabAbaxClassifier
             Fitted classifier instance.
 
         Raises
@@ -415,7 +415,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         self.n_samples_in_ = _num_samples(X)
         self._build_inference_config()
 
-        # Load the pre-trained Tababax model
+        # Load the pre-trained TabAbax model
         self._load_model()
         self.model_.to(self.device_)
 
@@ -506,14 +506,14 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
                 self.model_.clear_cache()
 
             # Merge all batch caches into a single cache
-            self.model_kv_cache_[norm_method] = TababaxCache.concat(caches)
+            self.model_kv_cache_[norm_method] = TabAbaxCache.concat(caches)
 
     def _batch_forward(
         self, Xs: np.ndarray, ys: np.ndarray, feature_shuffles: Optional[np.ndarray] = None
     ) -> np.ndarray:
         """Process model forward passes in batches to manage memory efficiently.
 
-        This method handles the batched inference through the Tababax model,
+        This method handles the batched inference through the TabAbax model,
         dividing the ensemble members into smaller batches to avoid out-of-memory errors.
 
         Parameters
@@ -567,7 +567,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
 
         return np.concatenate(outputs, axis=0)
 
-    def _batch_forward_with_cache(self, Xs: np.ndarray, kv_cache: TababaxCache) -> np.ndarray:
+    def _batch_forward_with_cache(self, Xs: np.ndarray, kv_cache: TabAbaxCache) -> np.ndarray:
         """Process model forward passes using a pre-computed KV cache.
 
         The cache is sliced along the batch dimension to match each batch.
@@ -577,7 +577,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
         Xs : np.ndarray
             Test features of shape ``(n_datasets, test_size, n_features)``.
 
-        kv_cache : TababaxCache
+        kv_cache : TabAbaxCache
             Single KV cache for all estimators of a normalization method.
 
         Returns
@@ -613,7 +613,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
         """Predict class probabilities for test samples.
 
-        Applies the ensemble of Tababax models to make predictions, with each ensemble
+        Applies the ensemble of TabAbax models to make predictions, with each ensemble
         member providing predictions that are then averaged. The method:
 
         1. Transforms input data using the fitted encoders
@@ -661,7 +661,7 @@ class TababaxClassifier(ClassifierMixin, TababaxEstimator):
             if self.n_jobs > 0:
                 if self.n_jobs > n_logical_cores:
                     warnings.warn(
-                        f"Tababax got n_jobs={self.n_jobs} but there are only {n_logical_cores} logical cores available."
+                        f"TabAbax got n_jobs={self.n_jobs} but there are only {n_logical_cores} logical cores available."
                         f" Only {n_logical_cores} threads will be used."
                     )
                 n_threads = min(n_logical_cores, self.n_jobs)

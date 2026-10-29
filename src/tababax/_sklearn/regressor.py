@@ -16,19 +16,19 @@ from sklearn.utils.validation import check_is_fitted
 from huggingface_hub import hf_hub_download
 from huggingface_hub.utils import LocalEntryNotFoundError
 
-from .base import TababaxEstimator
+from .base import TabAbaxEstimator
 from .preprocessing import TransformToNumerical, EnsembleGenerator
 from .sklearn_utils import validate_data, _num_samples
 
 from tababax import InferenceConfig
-from tababax._model.model import Tababax
-from tababax._model.kv_cache import TababaxCache
+from tababax._model.model import TabAbax
+from tababax._model.kv_cache import TabAbaxCache
 
 
-class TababaxRegressor(RegressorMixin, TababaxEstimator):
-    """Tababax regressor with a scikit-learn interface.
+class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
+    """TabAbax regressor with a scikit-learn interface.
 
-    This regressor applies Tababax to tabular regression, using an ensemble
+    This regressor applies TabAbax to tabular regression, using an ensemble
     of transformed dataset views to improve predictions. The ensemble members are
     created by applying different normalization methods and feature permutations.
 
@@ -68,7 +68,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         - If provided and the file exists, it's loaded directly.
         - If provided but the file doesn't exist and `allow_auto_download` is true, the file
           named by `checkpoint_version` is downloaded from Hugging Face Hub
-          (repo: 'tababax-ai/tababax') to this path.
+          (repo: 'tababax-ai/TabAbax') to this path.
         - If `None` (default), `checkpoint_version` is downloaded from that repository and
           cached in the default Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
 
@@ -77,7 +77,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         specified `model_path`.
 
     checkpoint_version : str, default="tababax-regressor.ckpt"
-        Checkpoint file name on `tababax-ai/tababax`. Used when `model_path` is
+        Checkpoint file name on `tababax-ai/TabAbax`. Used when `model_path` is
         missing or does not exist and `allow_auto_download` is true.
 
     device : Optional[str or torch.device], default=None
@@ -152,10 +152,10 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
 
     inference_config : Optional[InferenceConfig | Dict[str, Dict[str, Any]]], default=None
         Configuration for inference settings. This parameter provides fine-grained control
-        over the three transformers in Tababax (column-wise, row-wise, and in-context learning).
+        over the three transformers in TabAbax (column-wise, row-wise, and in-context learning).
 
         WARNING: This parameter should only be used by advanced users who understand the internal
-        architecture of Tababax and need precise control over inference.
+        architecture of TabAbax and need precise control over inference.
 
         When None (default):
             - A new InferenceConfig object is created with default settings
@@ -195,8 +195,8 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
     ensemble_generator_ : EnsembleGenerator
         Fitted ensemble generator that creates multiple dataset views.
 
-    model_ : Tababax
-        The loaded Tababax model used for predictions.
+    model_ : TabAbax
+        The loaded TabAbax model used for predictions.
 
     model_path_ : str
         Path to the loaded checkpoint file.
@@ -214,7 +214,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         The resolved caching mode, set during ``fit()`` based on the ``kv_cache``
         init parameter. One of ``"kv"``, ``"repr"``, or ``None`` (no caching).
 
-    model_kv_cache_ : OrderedDict[str, TababaxCache] or None
+    model_kv_cache_ : OrderedDict[str, TabAbaxCache] or None
         Pre-computed KV caches for training data, keyed by normalization method.
         Created during ``fit()`` when ``kv_cache`` is enabled. When set,
         ``predict()`` reuses the cached key-value projections instead of
@@ -279,13 +279,13 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
             If a checkpoint cannot be found or downloaded based on the settings.
         """
 
-        repo_id = "tababax-ai/tababax"
+        repo_id = "tababax-ai/TabAbax"
         filename = self.checkpoint_version
 
         if not filename and self.model_path is None:
             raise ValueError(
                 "No checkpoint was given. Pass model_path, or leave checkpoint_version at its default "
-                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/tababax)."
+                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/TabAbax)."
             )
 
         if self.model_path is None:
@@ -333,12 +333,12 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         self.model_path_ = model_path_
 
         config = checkpoint["config"]
-        self.model_ = Tababax(**config)
+        self.model_ = TabAbax(**config)
         self.model_config_ = config
         self.model_.load_state_dict(checkpoint["state_dict"])
         self.model_.eval()
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> TababaxRegressor:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> TabAbaxRegressor:
         """Fit the regressor to training data.
 
         Prepares the model for prediction by:
@@ -346,7 +346,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         1. Scaling target values using StandardScaler
         2. Converting input features to numerical values
         3. Fitting the ensemble generator to create transformed dataset views
-        4. Loading the pre-trained Tababax model
+        4. Loading the pre-trained TabAbax model
         5. Optionally pre-computing KV caches for training data to speed up inference
            (controlled by the ``kv_cache`` init parameter)
 
@@ -363,7 +363,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
 
         Returns
         -------
-        self : TababaxRegressor
+        self : TabAbaxRegressor
             Fitted regressor instance.
         """
 
@@ -394,7 +394,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         self.n_samples_in_ = _num_samples(X)
         self._build_inference_config()
 
-        # Load the pre-trained Tababax model
+        # Load the pre-trained TabAbax model
         self._load_model()
         self.model_.to(self.device_)
 
@@ -461,7 +461,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
                 self.model_.clear_cache()
 
             # Merge all batch caches into a single cache
-            self.model_kv_cache_[norm_method] = TababaxCache.concat(caches)
+            self.model_kv_cache_[norm_method] = TabAbaxCache.concat(caches)
 
     def _batch_forward(
         self,
@@ -472,7 +472,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
     ) -> np.ndarray | dict[str, np.ndarray]:
         """Process model forward passes in batches to manage memory efficiently.
 
-        This method handles the batched inference through the Tababax model,
+        This method handles the batched inference through the TabAbax model,
         dividing the ensemble members into smaller batches to avoid out-of-memory errors.
 
         Parameters
@@ -536,7 +536,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
     def _batch_forward_with_cache(
         self,
         Xs: np.ndarray,
-        kv_cache: TababaxCache,
+        kv_cache: TabAbaxCache,
         output_type: str | list[str] = "mean",
         alphas: Optional[List[float]] = None,
     ) -> np.ndarray | dict[str, np.ndarray]:
@@ -549,7 +549,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
         Xs : np.ndarray
             Test features of shape ``(n_datasets, test_size, n_features)``.
 
-        kv_cache : TababaxCache
+        kv_cache : TabAbaxCache
             Single KV cache for all estimators of a normalization method.
 
         output_type : str or list of str, default="mean"
@@ -607,7 +607,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
     ) -> np.ndarray | dict[str, np.ndarray]:
         """Predict target values for test samples.
 
-        Applies the ensemble of Tababax models to make predictions, with each ensemble
+        Applies the ensemble of TabAbax models to make predictions, with each ensemble
         member providing predictions that are then averaged. The method:
 
         1. Transforms input data using the fitted encoders
@@ -631,7 +631,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
             - If ``"median"``, returns the median over the predicted distribution.
             - If ``"quantiles"``, returns the quantiles of the predicted distribution.
               The parameter ``alphas`` determines which quantiles are returned.
-            - If ``"raw_quantiles"``, returns the raw quantiles (direct outputs of Tababax).
+            - If ``"raw_quantiles"``, returns the raw quantiles (direct outputs of TabAbax).
             - If a list of str, returns multiple types of outputs as specified in the list.
 
         alphas : list of float or None, default=None
@@ -677,7 +677,7 @@ class TababaxRegressor(RegressorMixin, TababaxEstimator):
             if self.n_jobs > 0:
                 if self.n_jobs > n_logical_cores:
                     warnings.warn(
-                        f"Tababax got n_jobs={self.n_jobs} but there are only {n_logical_cores} logical cores available."
+                        f"TabAbax got n_jobs={self.n_jobs} but there are only {n_logical_cores} logical cores available."
                         f" Only {n_logical_cores} threads will be used."
                     )
                 n_threads = min(n_logical_cores, self.n_jobs)
