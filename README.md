@@ -29,7 +29,9 @@ pip install "git+https://github.com/tababax-research/TabAbax.git"
 
 ## Weights
 
-Checkpoints are not in this repository. Pass a local file and refuse any download:
+Omitting `model_path` downloads the public checkpoint from [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax). The classifier file is `tababax-classifier.ckpt`. The regressor file is `tababax-regressor.ckpt`. Those weights are publicly available for non-commercial use.
+
+Pass a local file when the checkpoint is already on disk:
 
 ```python
 TabAbaxClassifier(
@@ -37,8 +39,6 @@ TabAbaxClassifier(
     allow_auto_download=False,
 )
 ```
-
-The official checkpoints will be published separately on Hugging Face. This release does not select a checkpoint on its own. Pass `model_path`.
 
 ## Usage
 

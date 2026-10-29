@@ -93,20 +93,19 @@ class TabAbaxClassifier(ClassifierMixin, TabAbaxEstimator):
         Path to the pre-trained model checkpoint file.
 
         - If provided and the file exists, it's loaded directly.
-        - If provided but the file doesn't exist and `allow_auto_download` is true, the version
-          specified by `checkpoint_version` is downloaded from Hugging Face Hub (repo: 'jingang/TabICL')
-          to this path.
-        - If `None` (default), the version specified by `checkpoint_version` is downloaded from
-          Hugging Face Hub (repo: 'jingang/TabICL') and cached locally in the default
-          Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
+        - If provided but the file doesn't exist and `allow_auto_download` is true, the file
+          named by `checkpoint_version` is downloaded from Hugging Face Hub
+          (repo: 'tababax-ai/tababax') to this path.
+        - If `None` (default), `checkpoint_version` is downloaded from that repository and
+          cached in the default Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
 
     allow_auto_download : bool, default=True
         Whether to allow automatic download if the pretrained checkpoint cannot be found at the
         specified `model_path`.
 
-    checkpoint_version : str or None, default=None
-        Optional checkpoint file name used only when `model_path` is missing and
-        `allow_auto_download` is true. The default does not select a checkpoint.
+    checkpoint_version : str, default="tababax-classifier.ckpt"
+        Checkpoint file name on `tababax-ai/tababax`. Used when `model_path` is
+        missing or does not exist and `allow_auto_download` is true.
 
     device : Optional[str or torch.device], default=None
         Device to use for inference. If None, automatically selects CUDA when
@@ -268,7 +267,7 @@ class TabAbaxClassifier(ClassifierMixin, TabAbaxEstimator):
         batch_size: Optional[int] = 1,
         model_path: Optional[str | Path] = None,
         allow_auto_download: bool = True,
-        checkpoint_version: Optional[str] = None,
+        checkpoint_version: str = "tababax-classifier.ckpt",
         device: Optional[str | torch.device] = None,
         use_amp: bool | str = "auto",
         use_fa3: bool | str = False,
@@ -321,75 +320,43 @@ class TabAbaxClassifier(ClassifierMixin, TabAbaxEstimator):
             If a checkpoint cannot be found or downloaded based on the settings.
         """
 
-        repo_id = "jingang/TabICL"
+        repo_id = "tababax-ai/tababax"
         filename = self.checkpoint_version
         model_path_ = Path(self.model_path) if isinstance(self.model_path, str) else self.model_path
 
-        # A local file is loaded as-is. The version list below only applies when a download is required.
+        # A local file is loaded as-is. Download only when that file is absent.
         if model_path_ is not None and model_path_.exists():
             checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
-        else:
-            ckpt_v1 = "tabicl-classifier-v1-20250208.ckpt"
-            ckpt_v1_1 = "tabicl-classifier-v1.1-20250506.ckpt"
-            ckpt_v2 = "tabicl-classifier-v2-20260212.ckpt"
-
-            if filename == ckpt_v2:
-                info_message = f"INFO: Downloading classification checkpoint '{ckpt_v2}'.\n"
-            elif filename == ckpt_v1_1:
-                info_message = (
-                    f"INFO: Downloading classification checkpoint '{ckpt_v1_1}'.\n"
-                    f"The default checkpoint is '{ckpt_v2}'.\n"
-                )
-            elif filename == ckpt_v1:
-                info_message = (
-                    f"INFO: Downloading classification checkpoint '{ckpt_v1}'.\n"
-                    f"The default checkpoint is '{ckpt_v2}'.\n"
-                )
-            else:
-                raise ValueError(
-                    f"Invalid checkpoint version '{filename}'. Available ones are: '{ckpt_v1}', '{ckpt_v1_1}', '{ckpt_v2}'."
-                )
-
-            if self.model_path is None:
-                # Scenario 1: the model path is not provided, so download from HF Hub based on the checkpoint version
-                try:
-                    model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename, local_files_only=True))
-                except LocalEntryNotFoundError:
-                    if self.allow_auto_download:
-                        print(info_message)
-                        print(f"Checkpoint '{filename}' not cached.\n Downloading from Hugging Face Hub ({repo_id}).\n")
-                        model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename))
-                    else:
-                        raise ValueError(
-                            f"Checkpoint '{filename}' not cached and automatic download is disabled.\n"
-                            f"Set allow_auto_download=True to download the checkpoint from Hugging Face Hub ({repo_id})."
-                        )
-                if model_path_:
-                    checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
-            else:
-                # Scenario 2: the model path is provided
-                model_path_ = Path(self.model_path) if isinstance(self.model_path, str) else self.model_path
-                if model_path_.exists():
-                    # Scenario 2a: the model path exists, load it directly
-                    checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
+        elif not filename:
+            raise ValueError(
+                "No checkpoint was given. Pass model_path, or leave checkpoint_version at its default "
+                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/tababax)."
+            )
+        elif self.model_path is None:
+            try:
+                model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename, local_files_only=True))
+            except LocalEntryNotFoundError:
+                if self.allow_auto_download:
+                    print(f"Checkpoint '{filename}' not cached. Downloading from Hugging Face Hub ({repo_id}).\n")
+                    model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename))
                 else:
-                    # Scenario 2b: the model path does not exist, download the checkpoint version to this path
-                    if self.allow_auto_download:
-                        print(info_message)
-                        print(
-                            f"Checkpoint not found at '{model_path_}'.\n"
-                            f"Downloading '{filename}' from Hugging Face Hub ({repo_id}) to this location.\n"
-                        )
-                        model_path_.parent.mkdir(parents=True, exist_ok=True)
-                        cache_path = hf_hub_download(repo_id=repo_id, filename=filename, local_dir=model_path_.parent)
-                        Path(cache_path).rename(model_path_)
-                        checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
-                    else:
-                        raise ValueError(
-                            f"Checkpoint not found at '{model_path_}' and automatic download is disabled.\n"
-                            f"Either provide a valid checkpoint path, or set allow_auto_download=True to download "
-                            f"'{filename}' from Hugging Face Hub ({repo_id})."
-                        )
+                    raise ValueError(
+                        f"Checkpoint '{filename}' is not cached and automatic download is disabled."
+                    ) from None
+            checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
+        elif self.allow_auto_download:
+            print(
+                f"Checkpoint not found at '{model_path_}'. "
+                f"Downloading '{filename}' from Hugging Face Hub ({repo_id}) to this location.\n"
+            )
+            model_path_.parent.mkdir(parents=True, exist_ok=True)
+            cache_path = hf_hub_download(repo_id=repo_id, filename=filename, local_dir=model_path_.parent)
+            Path(cache_path).rename(model_path_)
+            checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
+        else:
+            raise ValueError(
+                f"Checkpoint not found at '{model_path_}' and automatic download is disabled."
+            )
 
         assert "config" in checkpoint, "The checkpoint doesn't contain the model configuration."
         assert "state_dict" in checkpoint, "The checkpoint doesn't contain the model state."

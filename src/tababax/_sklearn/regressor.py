@@ -66,20 +66,19 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         Path to the pre-trained model checkpoint file.
 
         - If provided and the file exists, it's loaded directly.
-        - If provided but the file doesn't exist and `allow_auto_download` is true, the version
-          specified by `checkpoint_version` is downloaded from Hugging Face Hub (repo: 'jingang/TabICL')
-          to this path.
-        - If `None` (default), the version specified by `checkpoint_version` is downloaded from
-          Hugging Face Hub (repo: 'jingang/TabICL') and cached locally in the default
-          Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
+        - If provided but the file doesn't exist and `allow_auto_download` is true, the file
+          named by `checkpoint_version` is downloaded from Hugging Face Hub
+          (repo: 'tababax-ai/tababax') to this path.
+        - If `None` (default), `checkpoint_version` is downloaded from that repository and
+          cached in the default Hugging Face cache directory (typically `~/.cache/huggingface/hub`).
 
     allow_auto_download : bool, default=True
         Whether to allow automatic download if the pretrained checkpoint cannot be found at the
         specified `model_path`.
 
-    checkpoint_version : str or None, default=None
-        Optional checkpoint file name used only when `model_path` is missing and
-        `allow_auto_download` is true. The default does not select a checkpoint.
+    checkpoint_version : str, default="tababax-regressor.ckpt"
+        Checkpoint file name on `tababax-ai/tababax`. Used when `model_path` is
+        missing or does not exist and `allow_auto_download` is true.
 
     device : Optional[str or torch.device], default=None
         Device to use for inference. If None, automatically selects CUDA when
@@ -231,7 +230,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         batch_size: Optional[int] = 1,
         model_path: Optional[str | Path] = None,
         allow_auto_download: bool = True,
-        checkpoint_version: Optional[str] = None,
+        checkpoint_version: str = "tababax-regressor.ckpt",
         device: Optional[str | torch.device] = None,
         use_amp: bool | str = "auto",
         use_fa3: bool | str = False,
@@ -280,8 +279,14 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
             If a checkpoint cannot be found or downloaded based on the settings.
         """
 
-        repo_id = "jingang/TabICL"
+        repo_id = "tababax-ai/tababax"
         filename = self.checkpoint_version
+
+        if not filename and self.model_path is None:
+            raise ValueError(
+                "No checkpoint was given. Pass model_path, or leave checkpoint_version at its default "
+                "so the checkpoint can be downloaded from Hugging Face Hub (tababax-ai/tababax)."
+            )
 
         if self.model_path is None:
             # Scenario 1: the model path is not provided, so download from HF Hub based on the checkpoint version
