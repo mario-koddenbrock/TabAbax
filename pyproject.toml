@@ -47,7 +47,7 @@ build-backend = "hatchling.build"
 path = "src/tababax/__about__.py"
 
 [tool.hatch.build.targets.sdist]
-only-include = ["src/tababax", "LICENSE", "NOTICE", "README.md", "requirements.txt"]
+only-include = ["src/tababax", "LICENSE", "README.md", "requirements.txt"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tababax"]

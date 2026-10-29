@@ -85,5 +85,3 @@ tests/test_import.py          public import check
 ## License
 
 The draft product terms are in `LICENSE`. They allow internal evaluation and non-commercial research. Commercial and production use needs a separate written agreement. The contact and the final text will be added before a public release.
-
-Portions of the source are derived from TabICL and remain under the BSD 3-Clause License. That notice is in `NOTICE` and is kept with the source.
