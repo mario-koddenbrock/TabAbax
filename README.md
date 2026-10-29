@@ -8,11 +8,20 @@ This repository is the inference package. It is what AutoGluon and TabArena impo
 
 Python >= 3.10.
 
+From a clone, install the inference dependencies and then the package:
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+`requirements.txt` lists torch, scikit-learn, numpy, scipy, pandas, einops, psutil, tqdm, and huggingface-hub. The same list is in `pyproject.toml`, so this also works:
+
 ```bash
 pip install -e .
 ```
 
-From a private Git checkout, the same install works over SSH:
+From the private GitHub repository:
 
 ```bash
 pip install "git+https://github.com/tababax-research/TabAbax.git"
