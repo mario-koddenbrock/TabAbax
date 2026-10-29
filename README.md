@@ -29,39 +29,52 @@ pip install "git+https://github.com/tababax-research/TabAbax.git"
 
 ## Weights
 
-Omitting `model_path` downloads the public checkpoint from [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax). The classifier file is `tababax-classifier.ckpt`. The regressor file is `tababax-regressor.ckpt`. Those weights are publicly available for non-commercial use.
+Leave `model_path` unset. The first `fit` downloads the public checkpoint from [tababax-ai/tababax](https://huggingface.co/tababax-ai/tababax) and stores it in the Hugging Face cache (`~/.cache/huggingface/hub`, or the directory in `HF_HOME`). Later runs reuse that file.
 
-Pass a local file when the checkpoint is already on disk:
+| Estimator | File |
+| --- | --- |
+| `TabAbaxClassifier` | `tababax-classifier.ckpt` |
+| `TabAbaxRegressor` | `tababax-regressor.ckpt` |
+
+Those weights are publicly available for non-commercial use. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
 ```python
-TabAbaxClassifier(
-    model_path="path/to/classifier.ckpt",
-    allow_auto_download=False,
-)
+TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
 ```
 
 ## Usage
 
+The defaults are the recommended settings. No checkpoint path is required.
+
 ```python
 from tababax import TabAbaxClassifier, TabAbaxRegressor
 
-clf = TabAbaxClassifier(
-    model_path="path/to/classifier.ckpt",
-    allow_auto_download=False,
-)
+clf = TabAbaxClassifier()
 clf.fit(X_train, y_train)
 clf.predict(X_test)
 clf.predict_proba(X_test)
 
-reg = TabAbaxRegressor(
-    model_path="path/to/regressor.ckpt",
-    allow_auto_download=False,
-)
+reg = TabAbaxRegressor()
 reg.fit(X_train, y_train)
 reg.predict(X_test)
 ```
 
-Inputs may be NumPy arrays or pandas DataFrames. String and categorical columns are encoded inside `fit`. The default prediction uses an ensemble of dataset views; `n_estimators=1` is a single forward pass. Ensemble members are forwarded one at a time unless `batch_size` is raised.
+Inputs may be NumPy arrays or pandas DataFrames. String and categorical columns are encoded inside `fit`.
+
+Recommended defaults:
+
+| Parameter | Default | What it does |
+| --- | --- | --- |
+| `n_estimators` | `8` | Number of dataset views in the ensemble. `1` is a single forward pass. |
+| `batch_size` | `1` | Ensemble members forwarded together. `None` sends every member in one batch. |
+| `model_path` | `None` | Local checkpoint. Unset means download the file named by `checkpoint_version`. |
+| `allow_auto_download` | `True` | Download that file when `model_path` is missing or does not exist. |
+| `checkpoint_version` | classifier: `tababax-classifier.ckpt`; regressor: `tababax-regressor.ckpt` | File name on `tababax-ai/tababax`. |
+| `device` | `None` | CUDA when it is available, otherwise XPU, MPS, then CPU. |
+| `use_amp` | `"auto"` | Mixed precision from the table size. Stays off for small tables and on CPU. |
+| `use_fa3` | `False` | FlashAttention-3. Leave this off unless the runtime provides it. |
+| `offload_mode` | `"auto"` | Places the large column embedding in GPU, CPU, or disk memory according to what is free. |
+| `random_state` | `42` | Ensemble shuffling. |
 
 ## AutoGluon and TabArena
 
@@ -70,7 +83,7 @@ The integration surface is the two estimators:
 - `tababax.TabAbaxClassifier`: `fit`, `predict`, `predict_proba`
 - `tababax.TabAbaxRegressor`: `fit`, `predict`
 
-No extra server or training entry point is required. A caller constructs the estimator, passes `model_path`, and uses the scikit-learn API.
+No extra server or training entry point is required. A caller constructs the estimator with the defaults above and uses the scikit-learn API. Pass `model_path` only when the checkpoint should come from a local file.
 
 ## Layout
 
