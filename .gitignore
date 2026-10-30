@@ -149,5 +149,3 @@ src_private/
 *.pt
 *.safetensors
 *.bin
-
-NOTICE

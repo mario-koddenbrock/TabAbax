@@ -30,7 +30,7 @@ class FourierFeatureEmbedding(nn.Module):
         self.group_size = group_size
         self.skip_value = skip_value
 
-        # Shape: [3, 16] when features are grouped in threes.
+        # Shape: [3, 16] for TabICLv2 feature grouping.
         self.frequencies = nn.Parameter(
             torch.empty(group_size, num_frequencies)
         )

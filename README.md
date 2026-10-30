@@ -29,7 +29,7 @@ pip install -e .
 pip install -e .
 ```
 
-From the private GitHub repository:
+From GitHub:
 
 ```bash
 pip install "git+https://github.com/tababax-research/TabAbax.git"
@@ -44,7 +44,7 @@ Leave `model_path` unset. The first `fit` downloads the public checkpoint from [
 | `TabAbaxClassifier` | `tababax-classifier.ckpt` |
 | `TabAbaxRegressor` | `tababax-regressor.ckpt` |
 
-The checkpoints on [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) are licensed under CC-BY-NC-4.0. That license is separate from the Apache-2.0 terms for this source code. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
+The checkpoints on [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) are licensed under CC-BY-NC-4.0. The model code they load is derived from TabICL and remains BSD-3-Clause. See `NOTICE`. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
 ```python
 TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
@@ -103,8 +103,27 @@ tests/test_import.py          public import check
 
 `_model/learning.py` is the in-context forward path. It is not a pre-training loop.
 
+## Relationship to TabICL
+
+TabAbax is a derivative of the TabICL v2 inference code, not an independent model. The TabAbax team did further research and experiments on that line. The released checkpoints come from that work.
+
+These modules are derived from [TabICL](https://github.com/soda-inria/tabicl), Copyright (c) 2025, Soda team @ Inria, and remain BSD-3-Clause:
+
+- `src/tababax/_model/`
+- `src/tababax/_sklearn/`
+
+`NOTICE` keeps the copyright notice and both license texts. Redistributions must keep `NOTICE`.
+
+What this repository changes, at the package boundary:
+
+- Public names: `TabICL` is `TabAbax`, `TabICLCache` is `TabAbaxCache`.
+- The repository contains the inference package only. TabICL pre-training, fine-tuning, and the data prior are not included.
+- The default checkpoints are `tababax-classifier.ckpt` and `tababax-regressor.ckpt` from [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax), under CC-BY-NC-4.0. They are not the public TabICL checkpoints.
+
 ## License
 
-The inference source in this repository is licensed under Apache-2.0. See `LICENSE`.
+Code derived from TabICL is BSD-3-Clause. See `NOTICE`.
 
-The pretrained weights downloaded by default are not covered by that license. They are published at [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) under CC-BY-NC-4.0 and are restricted to non-commercial use. Commercial use of those weights is not permitted.
+Packaging added around that code is Apache-2.0. See `LICENSE`.
+
+The pretrained weights downloaded by default are not covered by either of those licenses. They are published at [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) under CC-BY-NC-4.0 and are restricted to non-commercial use. Commercial use of those weights is not permitted.

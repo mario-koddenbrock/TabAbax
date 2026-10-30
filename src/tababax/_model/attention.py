@@ -39,7 +39,8 @@ def flash_attn3_toggle(enabled: bool):
 def set_flash_attn3_enabled(enabled: bool):
     """Globally enable or disable Flash Attention 3 for this process.
 
-    Flash Attention 3 runs attention in float16.
+    Used by the pre-training ``Trainer`` (``--use_flash_attn3``): FA3 runs attention
+    in fp16, so the TabICLv2 recipe enables it only for stages 2 and 3.
     """
     global _use_flash_attn3
     _use_flash_attn3 = enabled

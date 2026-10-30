@@ -29,6 +29,11 @@ from tababax._model.kv_cache import TabAbaxCache
 class TabAbaxClassifier(ClassifierMixin, TabAbaxEstimator):
     """TabAbax classifier with a scikit-learn interface.
 
+    The network is the TabICL classifier (https://github.com/soda-inria/tabicl,
+    Copyright (c) 2025, Soda team @ Inria, BSD-3-Clause), renamed. See NOTICE.
+    This package does not include TabICL pre-training. The checkpoint loaded by
+    default is published by TabAbax under CC-BY-NC-4.0.
+
     This classifier applies TabAbax to tabular classification, using an ensemble
     of transformed dataset views to improve predictions. The ensemble members are
     created by applying different normalization methods, feature permutations,

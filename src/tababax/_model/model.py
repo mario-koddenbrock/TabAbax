@@ -1,3 +1,10 @@
+"""In-context table model.
+
+Derived from TabICL (https://github.com/soda-inria/tabicl), Copyright (c) 2025,
+Soda team @ Inria, BSD-3-Clause. See NOTICE. The class and cache names differ.
+The architecture and these parameter descriptions are theirs.
+"""
+
 from __future__ import annotations
 from typing import Optional, List, Union, Literal
 
@@ -96,9 +103,11 @@ class TabAbax(nn.Module):
         Base scaling factor for rotary position encoding in the row interaction transformer.
 
     row_rope_interleaved : bool, default=True
-        If True, dimension pairs are (0, 1), (2, 3), and so on.
-        If False, the embedding is split into [0:d//2] and [d//2:d].
-        The two layouts are not equivalent. Checkpoint configs store this flag.
+        If True, uses interleaved rotation where dimension pairs are (0,1), (2,3), etc.
+        (the TabICLv1 variant). If False, uses non-interleaved rotation where the
+        embedding is split into first half [0:d//2] and second half [d//2:d]
+        (the TabICLv2 variant). The two variants are not equivalent; checkpoint
+        configs store this flag explicitly.
 
     icl_num_blocks : int, default=12
         Number of transformer blocks in the in-context learning transformer.
@@ -137,8 +146,9 @@ class TabAbax(nn.Module):
     zero_init : bool, default=True
         If True, zero-initializes the attention output projections and the second
         feedforward linear layer in every transformer block, so residual branches
-        start as identity. If False, use the default PyTorch initialization.
-        Only affects a freshly constructed module, not a loaded checkpoint.
+        start as identity (TabICLv1 behavior). Set to False for standard PyTorch
+        initialization (used for TabICLv2 pre-training). Only affects freshly
+        constructed models; irrelevant when loading a trained checkpoint.
 
     recompute : bool, default=False
         If True, uses gradient checkpointing to save memory at the cost of additional computation.
