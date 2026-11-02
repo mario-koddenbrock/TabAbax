@@ -6,6 +6,7 @@ The archives are built once per session and reused. Set ``TABABAX_SKIP_BUILD=1``
 to skip the build checks in environments without a network or build backend.
 """
 
+import importlib.util
 import os
 import subprocess
 import sys
@@ -133,6 +134,8 @@ def test_reference_commit_is_not_claimed_as_the_copy_source():
 def built_archives(tmp_path_factory):
     if os.environ.get("TABABAX_SKIP_BUILD"):
         pytest.skip("TABABAX_SKIP_BUILD is set")
+    if importlib.util.find_spec("build") is None:
+        pytest.skip("python-build is not installed; install the [test] extra")
     outdir = tmp_path_factory.mktemp("dist")
     try:
         subprocess.run(
