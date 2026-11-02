@@ -19,7 +19,10 @@ https://github.com/soda-inria/tabicl
 The TabICL-derived inference portions remain under the BSD 3-Clause License.
 The checkpoint weights in this repository are distributed under CC-BY-NC-4.0 and are not licensed for commercial use.
 
-The inference code is derived from TabICL v2.2.0, commit 0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3.
+The inference code is derived from TabICL v2.2.0, commit `0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3`.
+That commit is the version this card compares against. It is not a record of the commit that
+was copied when the code was first taken from TabICL. See `PROVENANCE.md` in the code repository
+for which files match that version and which are modified.
 
 ## Relationship to TabICL
 

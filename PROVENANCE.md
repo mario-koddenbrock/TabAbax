@@ -12,20 +12,49 @@ Tag `v2.2.0`, commit `0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3`.
 
 https://github.com/soda-inria/tabicl/commit/0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3
 
-Compared with that commit, these files match once the TabAbax attribution
-header is removed: `_cgroup_memory.py`, `attention.py`, `encoders.py`,
-`inference.py`, `inference_config.py`, `layers.py`, `learning.py`,
-`quantile_dist.py`, `ssmax.py`, and `_torch_devices.py`.
+This commit is the version used for the comparison in this file. It is not a record of
+the commit that was copied when the repository was created. That copy step was not recorded.
 
-`rope.py` and `sklearn_utils.py` match that commit apart from the header
-and the third-party license sentences added in their docstrings.
+### Files that match the reference version
+
+These files match once the TabAbax attribution header is removed:
+`_cgroup_memory.py`, `attention.py`, `encoders.py`, `inference_config.py`,
+`layers.py`, `learning.py`, `quantile_dist.py`, `ssmax.py`, and `_torch_devices.py`.
+
+`rope.py` and `sklearn_utils.py` match apart from the header and the third-party
+license sentences added in their docstrings.
+
 `kv_cache.py` matches apart from the header and the rename of
-`TabICLCache` to `TabAbaxCache`.
+`TabICLCache` to `TabAbaxCache`. That rename is the only difference in the file.
 
-These files are modified derivatives of that commit: `embedding.py`,
-`interaction.py`, `model.py` (from `tabicl.py`), `_sklearn/base.py`,
-`classifier.py`, `preprocessing.py`, and `regressor.py`.
+### Files that are modified derivatives
+
+- `embedding.py`;
+- `interaction.py`;
+- `inference.py`;
+- `model.py` (from `tabicl.py`);
+- `_sklearn/base.py`;
+- `_sklearn/classifier.py`;
+- `_sklearn/preprocessing.py`;
+- `_sklearn/regressor.py`.
+
 `embedding.py` adds `FourierFeatureEmbedding` and `ColInteraction`.
+`interaction.py` changes the body of `RowInteraction`.
+
+`inference.py` is a modified derivative, not a file that only differs by its header.
+On top of the reference version it adds a block marked
+`PATCH BEGIN: auto downgrade helpers` in the file. That block estimates the forward
+peak of the batch that will actually run, moves the stored output off the GPU when
+the batch no longer fits, and promotes a real out-of-memory failure to disk once
+before retrying. The reference version already contains `OffloadConfig`,
+`MemoryEstimator`, `AsyncCopyManager`, `DiskTensor`, and the `_cgroup_memory` helpers.
+TabAbax changes when and how that machinery is triggered, so the file must not be
+described as unchanged.
+
+### Modules that are not in this repository
+
+The reference version also ships `train/`, `prior/`, `_finetune/`, `forecast/`,
+`shap/`, and `_unsupervised/`. This repository does not include them.
 
 Derived areas:
 

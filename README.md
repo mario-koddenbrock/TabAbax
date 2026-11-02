@@ -10,18 +10,9 @@ Each ensemble member performs one forward pass. The default estimator uses eight
 
 ![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
 
-An internal comparison dated 2026-10-26, labeled `Bairong-Tabular` in those tables, reports:
+An internal comparison dated 2026-10-26, labeled `Bairong-Tabular` in those tables, places the model in the top ten of 41 methods on all 142 BeyondArena core datasets, and in the top eleven of 99 methods on the 51 TabArena v0.1 datasets. It ranks higher on regression than on classification in both boards.
 
-| Benchmark | Slice | Datasets | Methods | Elo | Position |
-| --- | --- | --- | --- | --- | --- |
-| BeyondArena, core | all | 142 | 41 | 1237.7 | 10 |
-| BeyondArena, core | classification | 98 | 41 | 1218.8 | 11 |
-| BeyondArena, core | regression | 44 | 41 | 1286.7 | 8 |
-| TabArena v0.1 | all | 51 | 99 | 1676.0 | 11 |
-| TabArena v0.1 | classification | not printed | not printed | 1646.7 | 12 |
-| TabArena v0.1 | regression | not printed | not printed | 2023.7 | 7 |
-
-Elo intervals, average ranks, and the fields that are still missing are in `results/README.md`. The raw per-split files are not in this repository. The commands that reproduce the protocol are under `benchmark/`.
+The recorded Elo values, intervals, average ranks, and the fields that are still missing are kept in `results/README.md`. The raw per-split files are not in this repository. The commands that reproduce the protocol are under `benchmark/`; `benchmark/README.md` lists what an exact rerun would still need.
 
 ## Install
 
@@ -122,7 +113,7 @@ tests/test_import.py          public import check
 
 TabAbax is a research derivative of the TabICLv2 inference implementation. It is not an independent implementation from scratch.
 
-Our contributions include modifications to the model architecture, changes to the synthetic-data prior and training distribution, newly trained checkpoints, renamed public APIs, and inference and memory-management changes. The training code and prior-generation code are not in this repository. The upstream tag is TabICL v2.2.0, commit `0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3`. `PROVENANCE.md` lists which files match that commit.
+Our contributions include modifications to the model architecture, changes to the synthetic-data prior and training distribution, newly trained checkpoints, renamed public APIs, and inference and memory-management changes. The training code and prior-generation code are not in this repository. TabICL v2.2.0, commit `0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3`, is the version this repository was compared against; it is not a record of the commit that was originally copied. `PROVENANCE.md` lists which files match that version and which are modified.
 
 These modules are derived from [TabICL](https://github.com/soda-inria/tabicl), Copyright (c) 2025, Soda team @ Inria, and remain BSD-3-Clause:
 
@@ -146,4 +137,4 @@ PyTabKit-derived portions and TabAbax packaging are Apache-2.0. See `LICENSES/Ap
 
 The root `LICENSE` file is an index of these licenses. It does not mean the whole repository is Apache-2.0.
 
-The pretrained weights are CC-BY-NC-4.0 and are restricted to non-commercial use. The text to upload as the Hugging Face model card is `docs/huggingface_model_card.md`. It is not yet the live model card.
+The pretrained weights are CC-BY-NC-4.0 and are restricted to non-commercial use. The Hugging Face model card at https://huggingface.co/tababax-ai/TabAbax is kept in sync with `docs/huggingface_model_card.md` in this repository.

@@ -20,6 +20,25 @@ The job that is executed is not NVIDIA's model list. It is the H20 run, pointed 
 The H20 run did not skip any dataset. Do not pass `--skip` if the goal is to repeat that run.
 Left out on purpose: Elo plots, the lighttabc import shim, the AutoGluon shared-weight shim, the datetime fill patch, and the offline dataset materializer. Those were environment workarounds. They are not part of the scored configuration.
 
+## What a rerun can and cannot reproduce
+
+These scripts reproduce the evaluation *procedure*: the bundles, pipelines, the
+job call, the checkpoint handling, and the leaderboard arguments. They do not
+turn this repository into a byte-exact reproduction of the 2026-10-26 numbers.
+The figures in `results/README.md` are a record of that run, not an output this
+repository can regenerate on its own.
+
+Not in this repository, and needed for an exact rerun:
+
+- the per-split `results.pkl` files written by that run;
+- the TabArena and BeyondArena revisions that were installed for it;
+- the full machine record: CPU, RAM, disk, driver, CUDA, and PyTorch versions;
+- the TabAbax TabArena branch, which supplies `TabAbaxModel`.
+
+A rerun on different hardware, or against a newer TabArena or BeyondArena, can
+produce different Elo values from the same code. Treat the tables as reported
+results and the scripts as the procedure to repeat them.
+
 The checkpoint weights are CC-BY-NC-4.0. A run that leaves the checkpoint
 arguments empty downloads `tababax-ai/TabAbax`. That download is not licensed
 for commercial use.

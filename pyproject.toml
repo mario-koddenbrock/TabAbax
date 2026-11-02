@@ -10,6 +10,14 @@ maintainers = [
     { name = "TabAbax Research Team" },
 ]
 license = { file = "LICENSE" }
+license-files = [
+    "LICENSE",
+    "NOTICE",
+    "LICENSES/Apache-2.0.txt",
+    "LICENSES/BSD-3-Clause.txt",
+    "LICENSES/MIT.txt",
+    "PROVENANCE.md",
+]
 requires-python = ">=3.10"
 keywords = ["tabular data", "TabAbax"]
 classifiers = [
@@ -56,9 +64,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.version]
 path = "src/tababax/__about__.py"
-
-[tool.hatch.build]
-license-files = ["LICENSE", "NOTICE", "LICENSES/*.txt", "PROVENANCE.md"]
 
 [tool.hatch.build.targets.sdist]
 only-include = [

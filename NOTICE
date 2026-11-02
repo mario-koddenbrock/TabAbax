@@ -22,7 +22,12 @@ Those portions remain under the BSD 3-Clause License.
 See LICENSES/BSD-3-Clause.txt.
 
 The comparison tag is v2.2.0, commit 0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3.
-See PROVENANCE.md for which files match that commit and which are modified.
+That commit is the version this distribution was compared against. It is not a
+record of the commit that was originally copied.
+See PROVENANCE.md for which files match that version and which are modified.
+`_model/inference.py`, `_model/embedding.py`, `_model/interaction.py`,
+`_model/model.py`, and the listed `_sklearn` modules are modified derivatives,
+not unchanged copies.
 
 TabICL-derived files:
 
