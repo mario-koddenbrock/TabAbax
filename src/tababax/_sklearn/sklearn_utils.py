@@ -1,9 +1,23 @@
+# This file is derived from TabICL v2:
+# https://github.com/soda-inria/tabicl
+#
+# Original copyright:
+# Copyright (c) 2025, Soda team @ Inria
+#
+# TabAbax modifications:
+# Copyright (c) 2026 TabAbax
+#
+# The TabICL-derived portions remain under the BSD 3-Clause License.
+# See NOTICE and LICENSES/BSD-3-Clause.txt.
+
 """Utility functions for sklearn compatibility.
 
 This module provides scikit-learn utility functions that work across different
 versions of scikit-learn, eliminating the need for version-specific handling.
 
 Adapted from: https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/utils/validation.py
+
+The adapted portions are BSD-3-Clause. See NOTICE and LICENSES/BSD-3-Clause.txt.
 """
 
 from __future__ import annotations

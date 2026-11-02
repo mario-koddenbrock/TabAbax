@@ -1,3 +1,15 @@
+# This file is based on TabICL v2 and has been modified by TabAbax.
+# https://github.com/soda-inria/tabicl
+#
+# Original copyright:
+# Copyright (c) 2025, Soda team @ Inria
+#
+# TabAbax modifications:
+# Copyright (c) 2026 TabAbax
+#
+# The original TabICL-derived portions remain under BSD-3-Clause.
+# See NOTICE and LICENSES/BSD-3-Clause.txt.
+
 from __future__ import annotations
 
 import sys
@@ -544,8 +556,14 @@ class RTDLQuantileTransformer(BaseEstimator, TransformerMixin):
 
     Notes
     -----
-    Adapted from https://github.com/yandex-research/tabular-dl-tabr/blob/75105013189c76bc4f247633c2fb856bc948e579/lib/data.py#L262
-    following https://github.com/dholzmueller/pytabkit/blob/949bf81e3964f65a33dd2c252c3713c239c17b2d/pytabkit/models/utils.py#L431
+    Adapted from TabR, MIT License, Copyright (c) 2023 Authors of
+    "TabR: Unlocking the Power of Retrieval-Augmented Tabular Deep Learning":
+    https://github.com/yandex-research/tabular-dl-tabr/blob/75105013189c76bc4f247633c2fb856bc948e579/lib/data.py#L262
+
+    following PyTabKit, Apache-2.0:
+    https://github.com/dholzmueller/pytabkit/blob/949bf81e3964f65a33dd2c252c3713c239c17b2d/pytabkit/models/utils.py#L431
+
+    See NOTICE, LICENSES/MIT.txt, and LICENSES/Apache-2.0.txt.
     """
 
     def __init__(

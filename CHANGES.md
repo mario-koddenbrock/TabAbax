@@ -1,5 +1,14 @@
 # Changes
 
+## Unreleased
+
+- Restored explicit TabICLv2 provenance and attribution.
+- Added third-party notices for TabICL, scikit-learn, TabR, PyTabKit, and rotary-embedding-torch.
+- Clarified the separation between source-code licenses and the checkpoint license.
+- Added model-card and benchmark provenance documentation.
+- Added TabArena and BeyondArena runner scripts under `benchmark/`, and recorded the 2026-10-26 Elo summary.
+- This commit corrects the earlier omission of TabICL attribution and clarifies the licensing of derived and original portions. Git history was not rewritten.
+
 ## 1.0.0
 
 Inference release of TabAbax, derived from the TabICL v2 inference code.

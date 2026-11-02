@@ -1,16 +1,27 @@
 # TabAbax
 
-Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. `predict` runs one forward pass of a pretrained model. The model weights are not updated.
+Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. Each ensemble member runs one forward pass of a pretrained model. The default estimator uses eight dataset-view ensemble members. The model weights are not updated.
 
-This repository is the inference package. It is what AutoGluon and TabArena import. It does not contain pre-training, fine-tuning, data priors, or checkpoints.
+This repository contains inference code and the benchmark entry points under `benchmark/`. It does not contain pre-training code, synthetic prior generation, training datasets, optimizer configuration, or checkpoint-generation scripts. The released checkpoints were trained from a TabICLv2-derived implementation with additional architectural and prior changes.
 
 ## Results
 
-TabAbax predicts on unseen tabular datasets in one forward pass, without task-specific training.
+Each ensemble member performs one forward pass. The default estimator uses eight dataset-view ensemble members.
 
 ![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
 
-On the full BeyondArena suite (142 datasets: 98 classification and 44 regression), TabAbax reaches an Elo of 1,238 and ranks 10th of 41 methods.
+An internal comparison dated 2026-10-26, labeled `Bairong-Tabular` in those tables, reports:
+
+| Benchmark | Slice | Datasets | Methods | Elo | Position |
+| --- | --- | --- | --- | --- | --- |
+| BeyondArena, core | all | 142 | 41 | 1237.7 | 10 |
+| BeyondArena, core | classification | 98 | 41 | 1218.8 | 11 |
+| BeyondArena, core | regression | 44 | 41 | 1286.7 | 8 |
+| TabArena v0.1 | all | 51 | 99 | 1676.0 | 11 |
+| TabArena v0.1 | classification | not printed | not printed | 1646.7 | 12 |
+| TabArena v0.1 | regression | not printed | not printed | 2023.7 | 7 |
+
+Elo intervals, average ranks, and the fields that are still missing are in `results/README.md`. The raw per-split files are not in this repository. The commands that reproduce the protocol are under `benchmark/`.
 
 ## Install
 
@@ -44,7 +55,7 @@ Leave `model_path` unset. The first `fit` downloads the public checkpoint from [
 | `TabAbaxClassifier` | `tababax-classifier.ckpt` |
 | `TabAbaxRegressor` | `tababax-regressor.ckpt` |
 
-The checkpoints on [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) are licensed under CC-BY-NC-4.0. The model code they load is derived from TabICL and remains BSD-3-Clause. See `NOTICE`. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
+The checkpoints on [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) are separate artifacts under CC-BY-NC-4.0 and are not licensed for commercial use. The inference implementation contains TabICL v2 portions that remain BSD-3-Clause. See `NOTICE`. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
 ```python
 TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
@@ -103,27 +114,36 @@ tests/test_import.py          public import check
 
 `_model/learning.py` is the in-context forward path. It is not a pre-training loop.
 
+## Benchmark
+
+`benchmark/README.md` has the TabArena and BeyondArena commands. They follow the NVIDIA benchmark layout and the protocol of the 2026-10-26 runs. They do not draw figures.
+
 ## Relationship to TabICL
 
-TabAbax is a derivative of the TabICL v2 inference code, not an independent model. The TabAbax team did further research and experiments on that line. The released checkpoints come from that work.
+TabAbax is a research derivative of the TabICLv2 inference implementation. It is not an independent implementation from scratch.
+
+Our contributions include modifications to the model architecture, changes to the synthetic-data prior and training distribution, newly trained checkpoints, renamed public APIs, and inference and memory-management changes. The training code and prior-generation code are not in this repository. The upstream tag is TabICL v2.2.0, commit `0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3`. `PROVENANCE.md` lists which files match that commit.
 
 These modules are derived from [TabICL](https://github.com/soda-inria/tabicl), Copyright (c) 2025, Soda team @ Inria, and remain BSD-3-Clause:
 
 - `src/tababax/_model/`
-- `src/tababax/_sklearn/`
+- `src/tababax/_sklearn/base.py`
+- `src/tababax/_sklearn/classifier.py`
+- `src/tababax/_sklearn/regressor.py`
+- `src/tababax/_sklearn/preprocessing.py`
+- `src/tababax/_sklearn/sklearn_utils.py`
+- `src/tababax/_torch_devices.py`
 
-`NOTICE` keeps the copyright notice and both license texts. Redistributions must keep `NOTICE`.
-
-What this repository changes, at the package boundary:
-
-- Public names: `TabICL` is `TabAbax`, `TabICLCache` is `TabAbaxCache`.
-- The repository contains the inference package only. TabICL pre-training, fine-tuning, and the data prior are not included.
-- The default checkpoints are `tababax-classifier.ckpt` and `tababax-regressor.ckpt` from [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax), under CC-BY-NC-4.0. They are not the public TabICL checkpoints.
+`preprocessing.py` also contains TabR (MIT) and PyTabKit (Apache-2.0) portions. `sklearn_utils.py` contains scikit-learn (BSD-3-Clause) portions. `src/tababax/_model/rope.py` contains rotary-embedding-torch (MIT) portions. See `NOTICE` and `PROVENANCE.md`.
 
 ## License
 
-Code derived from TabICL is BSD-3-Clause. See `NOTICE`.
+Code derived from TabICL is BSD-3-Clause. See `LICENSES/BSD-3-Clause.txt`.
 
-Packaging added around that code is Apache-2.0. See `LICENSE`.
+TabR-derived and rotary-embedding-torch portions are MIT. See `LICENSES/MIT.txt`.
 
-The pretrained weights downloaded by default are not covered by either of those licenses. They are published at [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) under CC-BY-NC-4.0 and are restricted to non-commercial use. Commercial use of those weights is not permitted.
+PyTabKit-derived portions and TabAbax packaging are Apache-2.0. See `LICENSES/Apache-2.0.txt`.
+
+The root `LICENSE` file is an index of these licenses. It does not mean the whole repository is Apache-2.0.
+
+The pretrained weights are CC-BY-NC-4.0 and are restricted to non-commercial use. The text to upload as the Hugging Face model card is `docs/huggingface_model_card.md`. It is not yet the live model card.

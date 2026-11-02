@@ -4,13 +4,18 @@ dynamic = ["version"]
 description = "TabAbax: sklearn estimators for tabular classification and regression"
 readme = "README.md"
 authors = [
-    { name = "TabAbax" },
+    { name = "TabAbax Research Team" },
+]
+maintainers = [
+    { name = "TabAbax Research Team" },
 ]
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 keywords = ["tabular data", "TabAbax"]
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: MIT License",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering",
@@ -39,6 +44,12 @@ test = [
     "pytest",
 ]
 
+[project.urls]
+Homepage = "https://github.com/tababax-research/TabAbax"
+Repository = "https://github.com/tababax-research/TabAbax"
+Documentation = "https://github.com/tababax-research/TabAbax#readme"
+Source = "https://github.com/soda-inria/tabicl"
+
 [build-system]
 requires = ["hatchling>=1.26.1"]
 build-backend = "hatchling.build"
@@ -47,7 +58,7 @@ build-backend = "hatchling.build"
 path = "src/tababax/__about__.py"
 
 [tool.hatch.build]
-license-files = ["LICENSE", "NOTICE"]
+license-files = ["LICENSE", "NOTICE", "LICENSES/*.txt", "PROVENANCE.md"]
 
 [tool.hatch.build.targets.sdist]
 only-include = [
@@ -56,6 +67,10 @@ only-include = [
     "NOTICE",
     "README.md",
     "requirements.txt",
+    "PROVENANCE.md",
+    "LICENSES",
+    "results/README.md",
+    "benchmark",
 ]
 
 [tool.hatch.build.targets.wheel]

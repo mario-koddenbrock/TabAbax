@@ -1,3 +1,15 @@
+# This file is derived from TabICL v2:
+# https://github.com/soda-inria/tabicl
+#
+# Original copyright:
+# Copyright (c) 2025, Soda team @ Inria
+#
+# TabAbax modifications:
+# Copyright (c) 2026 TabAbax
+#
+# The TabICL-derived portions remain under the BSD 3-Clause License.
+# See NOTICE and LICENSES/BSD-3-Clause.txt.
+
 from __future__ import annotations
 from typing import Optional, Tuple, Union
 
