@@ -1,8 +1,12 @@
 # Results recorded on 2026-10-26
 
-The figure `docs/beyondarena_elo.png` and the numbers below come from an internal comparison.
-The raw per-split files, the official baseline cache, and the code that drew the figure are not in this repository.
-`benchmark/` contains the run and leaderboard commands, without the plotting code.
+The figure `docs/beyondarena_elo.png` and the numbers below come from an internal comparison
+run on 2026-10-26.
+They are not the output of a run in this repository: the raw per-split files, the
+benchmark revisions that were installed, the machine record, and the code that drew
+the figure were not kept.
+`benchmark/` contains the run and leaderboard commands, without the plotting code, so a
+rerun reproduces the procedure and can land on different Elo values.
 
 The position column is the place of this model when the printed table is sorted by Elo.
 The average rank is the `rank` column of that same table. The two are not the same number.
@@ -45,9 +49,8 @@ for this note. They are CC-BY-NC-4.0.
 
 `benchmark/tabular/*/main.py` is the command that runs the jobs.
 `evaluate.py` reads the `results.pkl` files that command writes and prints the
-leaderboard. Those pickles are run outputs. They are not committed, which is
-also how the NVIDIA benchmark scripts treat them. Running `main.py` is the
-reproduction step.
+leaderboard. Those pickles are run outputs. They are not committed. Running
+`main.py` reproduces the procedure; it does not replay the 2026-10-26 run.
 
 Not recorded with the 2026-10-26 notes: the TabArena and BeyondArena
 commits, CPU, RAM, disk, CUDA, and PyTorch versions. The runner uses the

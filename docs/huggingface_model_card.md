@@ -44,7 +44,7 @@ Research and non-commercial evaluation of tabular classification and regression 
 
 Results depend on dataset preprocessing, ensemble settings, hardware, and benchmark version. The reported results should not be interpreted as a guarantee on unseen datasets.
 
-The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped. The weights are the renamed files in this repository. Per-split `results.pkl` files are produced by `benchmark/tabular/*/main.py` and are not committed. See `results/README.md` in https://github.com/tababax-research/TabAbax.
+The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped. The weights are the renamed files in this repository. Per-split `results.pkl` files are produced by `benchmark/tabular/*/main.py` and are not committed, and the benchmark revisions and machine versions from that run were not kept, so a rerun reproduces the procedure rather than these exact scores. See `results/README.md` in https://github.com/tababax-research/TabAbax.
 
 ## Citation
 
