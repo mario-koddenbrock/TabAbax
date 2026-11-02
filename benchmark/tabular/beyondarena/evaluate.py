@@ -10,7 +10,7 @@ from tabarena.contexts import BeyondArenaContext
 from tabarena.end_to_end import EndToEnd
 from tabarena.models import MethodMetadata
 
-from benchmark.tabular.common import compare_kwargs
+from benchmark.tabular.common import beyondarena_subset, compare_kwargs
 
 ROOT = Path(__file__).resolve().parents[1] / "beyondarena_out" / "TabAbax"
 OUT = Path(__file__).resolve().parents[1] / "beyondarena_evals" / "TabAbax"
@@ -32,7 +32,9 @@ def main() -> None:
     for subset_name in ("classification", "regression", "all"):
         subset_dir = OUT / subset_name
         subset_dir.mkdir(parents=True, exist_ok=True)
-        leaderboard, _per_task = context.compare(**compare_kwargs(subset_dir, ["core", subset_name]))
+        leaderboard, _per_task = context.compare(
+            **compare_kwargs(subset_dir, beyondarena_subset(None, subset_name))
+        )
         print(f"\n{subset_name}")
         print(context.leaderboard_to_website_format(leaderboard).to_string(index=False))
 

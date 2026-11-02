@@ -36,9 +36,12 @@ so a rerun reproduces the procedure and can land on different Elo values.
 The position column is the place of this model when the printed table is sorted by Elo.
 The average rank is the `rank` column of that same table. The two are not the same number.
 
-## BeyondArena, core protocol
+## BeyondArena, core2k protocol
 
 41 methods.
+
+The board is the `core2k` subset: both `benchmark/tabular/beyondarena/main.py` and
+`evaluate.py` filter it, so the run and the leaderboard cover the same 2000 splits.
 
 | Slice | Datasets | Elo | Elo+ | Elo- | Average rank | Position |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -75,7 +78,7 @@ for this note. They are CC-BY-NC-4.0.
 `benchmark/tabular/*/main.py` is the command that runs the jobs.
 `evaluate.py` reads the `results.pkl` files that command writes and prints the
 leaderboard. Those pickles stay local; the flattened per-split rows are what the
-two parquet files above hold. Running `main.py` reproduces the procedure; it does
+three parquet files above hold. Running `main.py` reproduces the procedure; it does
 not replay the 2026-10-26 run.
 
 Why the parquet files are not a full replay either: the run also wrote

@@ -44,7 +44,7 @@ Research and non-commercial evaluation of tabular classification and regression 
 
 Results depend on dataset preprocessing, ensemble settings, hardware, and benchmark version. The reported results should not be interpreted as a guarantee on unseen datasets.
 
-The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped. The weights are the renamed files in this repository. Per-split `results.pkl` files are produced by `benchmark/tabular/*/main.py` and are not committed; the flattened per-split rows from that run for both benchmarks are committed in `results/` in the code repository. The benchmark revisions and machine versions from that run were not kept, so a rerun reproduces the procedure rather than these exact scores. See `results/README.md` in https://github.com/tababax-research/TabAbax.
+The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped. The weights are the renamed files in this repository. Per-split `results.pkl` files are produced by `benchmark/tabular/*/main.py` and are not committed; the flattened per-split rows from that run are committed in `results/` in the code repository: `beyondarena-core2k-2026-10-26-classification.parquet` (1446 rows, 98 datasets), `beyondarena-core2k-2026-10-26-regression.parquet` (554 rows, 44 datasets) and `tabarena-v0.1-2026-10-26.parquet` (816 rows, 51 datasets). Together the BeyondArena pair is the 2000-split `core2k` board. The benchmark revisions and machine versions from that run were not kept, so a rerun reproduces the procedure rather than these exact scores. See `results/README.md` in https://github.com/tababax-research/TabAbax.
 
 ## Citation
 

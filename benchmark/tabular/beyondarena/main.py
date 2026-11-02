@@ -12,7 +12,14 @@ from tabarena.benchmark.experiment import BeyondArenaExperimentBundle
 from tabarena.contexts import BeyondArenaContext
 from tabarena.utils.config_utils import ConfigGenerator
 
-from benchmark.tabular.common import cache_config, manual_config, run_jobs, tababax_model_cls
+from benchmark.tabular.common import (
+    beyondarena_subset,
+    cache_config,
+    manual_config,
+    prefetch_checkpoints,
+    run_jobs,
+    tababax_model_cls,
+)
 
 
 def _one(
@@ -23,12 +30,13 @@ def _one(
     dataset: str | None,
     skip: list[str],
     subset: list[str] | None,
+    revision: str | None = None,
 ) -> None:
     generator = ConfigGenerator(
         model_cls=tababax_model_cls(),
         name="TabAbax",
         search_space={},
-        manual_configs=[manual_config(checkpoint)],
+        manual_configs=[manual_config(checkpoint, revision)],
     )
     experiments = BeyondArenaExperimentBundle(
         models=[(generator, 0)],
@@ -43,7 +51,7 @@ def _one(
         experiment.experiment_kwargs["require_warmup"] = False
     jobs = context.build_jobs(
         experiments,
-        subset=subset or ["core2k", problem],
+        subset=beyondarena_subset(subset, problem),
         dataset_names=[dataset] if dataset else None,
     )
     if skip:
@@ -66,6 +74,7 @@ def main() -> None:
     parser.add_argument("--skip", action="append", default=[])
     parser.add_argument("--tabarena-cache", default=None)
     parser.add_argument("--data-foundry-cache", default=None)
+    parser.add_argument("--checkpoint-revision", default=None)
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
@@ -74,6 +83,11 @@ def main() -> None:
         if args.output
         else Path(__file__).resolve().parents[1] / "beyondarena_out" / "TabAbax"
     )
+    problems = [p for p in ("classification", "regression") if args.problem in {p, "all"}]
+    local = {"classification": args.classifier_checkpoint, "regression": args.regressor_checkpoint}
+    missing = [problem for problem in problems if local[problem] is None]
+    if missing:
+        prefetch_checkpoints(missing, args.checkpoint_revision)
     context = BeyondArenaContext(
         cache_config=cache_config(result_dir, args.tabarena_cache, args.data_foundry_cache),
     )
@@ -86,6 +100,7 @@ def main() -> None:
             args.dataset,
             args.skip,
             args.subset,
+            args.checkpoint_revision,
         )
     if args.problem in {"regression", "all"}:
         _one(
@@ -96,6 +111,7 @@ def main() -> None:
             args.dataset,
             args.skip,
             args.subset,
+            args.checkpoint_revision,
         )
 
 

@@ -17,21 +17,34 @@ Both runners use one manual configuration, the full training table as context
 with no bagging, and no feature shuffle. Classification and regression are
 separate passes because they load separate checkpoints.
 
-BeyondArena splits come from its `core2k` subset. Pass it explicitly:
+BeyondArena splits come from its `core2k` subset, which is the board the numbers
+in `results/` were scored on. It is the default: no flag is needed.
 
 ```bash
-python -m benchmark.tabular.beyondarena.main --problem all --subset core2k
+python -m benchmark.tabular.beyondarena.main --problem all
 ```
 
-`core2k` is a subset registered by the installed BeyondArena build; it widens the
-`core` subset to 2000 splits. Without `--subset`, `main.py` falls back to `core`,
-which is a narrower board and will not reproduce the 2000 splits in `results/`.
+`core2k` is a subset registered by the installed BeyondArena build that widens the
+507-split `core` subset to 2000 splits. `main.py` always ANDs it with the problem
+type, so `--problem all` is two passes: `core2k` and `classification`, then
+`core2k` and `regression`. A run cannot fall back to `core`.
+
+`--subset` adds one more filter instead of replacing the default. It takes a
+subset name the context registers, so `--subset core2k` is a no-op and
+`--subset large` narrows the board to the large tables:
+
+```bash
+python -m benchmark.tabular.beyondarena.main --problem regression --subset large
+```
+
+`evaluate.py` reads the same subset, so the printed leaderboard covers the board
+the run scored.
 
 | Setting | Value |
 | --- | --- |
 | TabArena bundle | `TabArenaV0pt1ExperimentBundle`, `outer_experiments=True`, pipeline `default`, `shuffle_features=False` |
 | BeyondArena bundle | `BeyondArenaExperimentBundle`, pipeline `tabarena_default`, `text_cache_mode="require"`, `shuffle_features=False`, subset `core2k` plus the problem type, `require_warmup=False` |
-| Checkpoints | `--classifier-checkpoint` and `--regressor-checkpoint`; omit them to download the published files |
+| Checkpoints | `--classifier-checkpoint` and `--regressor-checkpoint`; omit them to download the published files at the pinned commit |
 | `run_jobs` | one call, `register=False`, `debug_mode=True`, `cache_mode="default"` |
 | Leaderboard | `compare` with `fillna="auto"`, `calibration_method="auto"`, `average_seeds=False`, `score_on_val=False`, `remove_imputed=False`, and `plot=False` |
 
@@ -95,6 +108,19 @@ python -m benchmark.tabular.beyondarena.evaluate
 
 `--data-foundry-cache` points at a local BeyondArena download.
 Leave `--skip` unset to score every dataset.
+`--checkpoint-revision` pins the Hub commit; leave it unset for the commit the wrapper pins.
 The weight files are `tababax-classifier.ckpt` and `tababax-regressor.ckpt`
 in commit `039e4f239d06a4d631e38c15bc23ef195ed8cf79`.
 Hub commit `815239c50664fd73c1e4ee2d80414e9933757bc0` only changes the model-card text.
+
+### Pinned weights
+
+Omitting the checkpoint arguments downloads the released files at commit
+`039e4f239d06a4d631e38c15bc23ef195ed8cf79`, the commit the TabArena wrapper pins, rather
+than whatever the Hub's default branch holds when the run starts. The runner fetches the
+files it needs before the first job and prints the commit; the estimator then loads them
+from that same revision.
+
+`--checkpoint-revision` overrides the commit for both the pre-fetch and the estimator.
+Passing a local `--classifier-checkpoint` or `--regressor-checkpoint` skips the pre-fetch
+for that problem type and leaves the file unmodified.
