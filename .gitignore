@@ -142,6 +142,11 @@ docs/tutorials/
 # Downloaded reference papers (local only)
 papers/
 
+# Local ad-hoc verification scripts. Kept out of the repository: they read
+# machine-specific paths and compare against scores pinned on local hardware.
+/test_general.py
+/test_reproduce.py
+
 CLAUDE.md
 ckpts/
 src_private/
