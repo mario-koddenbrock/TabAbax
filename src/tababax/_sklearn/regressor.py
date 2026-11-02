@@ -97,6 +97,11 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         Checkpoint file name on `tababax-ai/TabAbax`. Used when `model_path` is
         missing or does not exist and `allow_auto_download` is true.
 
+    checkpoint_revision : Optional[str], default=None
+        Commit, tag or branch of `tababax-ai/TabAbax` to resolve `checkpoint_version` against.
+        ``None`` uses the repository's default branch, which moves: pin a commit to keep a
+        benchmark run loading the exact bytes it was measured on.
+
     device : Optional[str or torch.device], default=None
         Device to use for inference. If None, automatically selects CUDA when
         available, otherwise XPU, then MPS (Apple Silicon), and falls back to
@@ -248,6 +253,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         model_path: Optional[str | Path] = None,
         allow_auto_download: bool = True,
         checkpoint_version: str = "tababax-regressor.ckpt",
+        checkpoint_revision: Optional[str] = None,
         device: Optional[str | torch.device] = None,
         use_amp: bool | str = "auto",
         use_fa3: bool | str = False,
@@ -267,6 +273,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         self.model_path = model_path
         self.allow_auto_download = allow_auto_download
         self.checkpoint_version = checkpoint_version
+        self.checkpoint_revision = checkpoint_revision
         self.device = device
         self.use_amp = use_amp
         self.use_fa3 = use_fa3
@@ -298,6 +305,7 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
 
         repo_id = "tababax-ai/TabAbax"
         filename = self.checkpoint_version
+        revision = self.checkpoint_revision
 
         if not filename and self.model_path is None:
             raise ValueError(
@@ -308,11 +316,13 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
         if self.model_path is None:
             # Scenario 1: the model path is not provided, so download from HF Hub based on the checkpoint version
             try:
-                model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename, local_files_only=True))
+                model_path_ = Path(
+                    hf_hub_download(repo_id=repo_id, filename=filename, revision=revision, local_files_only=True)
+                )
             except LocalEntryNotFoundError:
                 if self.allow_auto_download:
                     print(f"Checkpoint '{filename}' not cached.\n Downloading from Hugging Face Hub ({repo_id}).\n")
-                    model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename))
+                    model_path_ = Path(hf_hub_download(repo_id=repo_id, filename=filename, revision=revision))
                 else:
                     raise ValueError(
                         f"Checkpoint '{filename}' not cached and automatic download is disabled.\n"
@@ -334,7 +344,9 @@ class TabAbaxRegressor(RegressorMixin, TabAbaxEstimator):
                         f"Downloading '{filename}' from Hugging Face Hub ({repo_id}) to this location.\n"
                     )
                     model_path_.parent.mkdir(parents=True, exist_ok=True)
-                    cache_path = hf_hub_download(repo_id=repo_id, filename=filename, local_dir=model_path_.parent)
+                    cache_path = hf_hub_download(
+                        repo_id=repo_id, filename=filename, revision=revision, local_dir=model_path_.parent
+                    )
                     Path(cache_path).rename(model_path_)
                     checkpoint = torch.load(model_path_, map_location="cpu", weights_only=True)
                 else:

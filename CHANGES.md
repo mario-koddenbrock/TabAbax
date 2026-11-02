@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added `checkpoint_revision` to `TabAbaxClassifier` and `TabAbaxRegressor`. Passing a commit
+  resolves every `hf_hub_download` call for the checkpoint against it, so a run keeps loading the
+  bytes it was measured on instead of following the Hub repository's moving default branch. The
+  default (unset) keeps the previous behaviour. Inference and checkpoint contents are unchanged.
 - Restored explicit TabICLv2 provenance and attribution.
 - Added third-party notices for TabICL, scikit-learn, TabR, PyTabKit, and rotary-embedding-torch.
 - Clarified the separation between source-code licenses and the checkpoint license.

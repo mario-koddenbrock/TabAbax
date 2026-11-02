@@ -48,6 +48,12 @@ Leave `model_path` unset. The first `fit` downloads the public checkpoint from [
 
 The checkpoints on [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax) are separate artifacts under CC-BY-NC-4.0 and are not licensed for commercial use. The inference implementation contains TabICL v2 portions that remain BSD-3-Clause. See `NOTICE`. Set `allow_auto_download=False` to refuse a download. Pass `model_path` when the checkpoint is already on disk; an existing file is loaded and nothing is downloaded.
 
+The Hub repository's default branch can be republished in place, so a benchmark that must keep loading the bytes it measured should pin the commit with `checkpoint_revision`. Unset (the default) resolves the default branch, as before.
+
+```python
+TabAbaxClassifier(checkpoint_revision="039e4f239d06a4d631e38c15bc23ef195ed8cf79")
+```
+
 ```python
 TabAbaxClassifier(model_path="path/to/classifier.ckpt", allow_auto_download=False)
 ```
@@ -80,6 +86,7 @@ Recommended defaults:
 | `model_path` | `None` | Local checkpoint. Unset means download the file named by `checkpoint_version`. |
 | `allow_auto_download` | `True` | Download that file when `model_path` is missing or does not exist. |
 | `checkpoint_version` | classifier: `tababax-classifier.ckpt`; regressor: `tababax-regressor.ckpt` | File name on `tababax-ai/TabAbax`. |
+| `checkpoint_revision` | `None` | Commit, tag or branch to resolve `checkpoint_version` against. Unset follows the default branch. |
 | `device` | `None` | CUDA when it is available, otherwise XPU, MPS, then CPU. |
 | `use_amp` | `"auto"` | Mixed precision from the table size. Stays off for small tables and on CPU. |
 | `use_fa3` | `False` | FlashAttention-3. Leave this off unless the runtime provides it. |
