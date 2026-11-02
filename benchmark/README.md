@@ -60,7 +60,7 @@ Not in this repository:
 
 - the per-split `results.pkl` files, which a run writes;
 - the TabArena and BeyondArena revisions that were installed;
-- the machine record: CPU, RAM, disk, driver, CUDA, and PyTorch versions;
+- the driver, CUDA, and PyTorch versions (the hardware is known, see `results/README.md`);
 - the TabAbax TabArena branch, which supplies `TabAbaxModel`.
 
 A rerun on different hardware, or against a newer TabArena or BeyondArena, can

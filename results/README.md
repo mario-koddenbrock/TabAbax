@@ -28,8 +28,9 @@ its configured repeat count, so no split was dropped. BeyondArena numbers splits
 
 What these files do not carry: the leaderboard is scored against baselines from
 the official cache, so the Elo values below are not recomputable from them alone.
-The benchmark revisions that were installed, the machine record, and the code
-that drew the figure were not kept either. See "Run record" for what is missing.
+The benchmark revisions that were installed, the CUDA and PyTorch versions,
+and the code that drew the figure were not kept either. The hardware is known;
+see "Run record" for what is missing.
 `benchmark/` contains the run and leaderboard commands, without the plotting code,
 so a rerun reproduces the procedure and can land on different Elo values.
 
@@ -101,5 +102,5 @@ rows, which is enough to recount coverage and per-dataset error, not enough to
 re-derive the Elo column against the baseline cache.
 
 Not recorded with the 2026-10-26 notes: the TabArena and BeyondArena
-commits, CPU, RAM, disk, CUDA, and PyTorch versions. The runner uses the
+commits, and the CUDA and PyTorch versions. The runner uses the
 estimator default `random_state=42` when the caller does not override it.

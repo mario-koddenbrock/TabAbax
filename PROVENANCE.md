@@ -103,14 +103,11 @@ See NOTICE for the applicable notices and license texts.
 
 ## Methods referenced but not copied
 
-Two places in the model code name a technique after the project it came from. No code from
-either project is vendored here and nothing imports them; the comments credit the idea.
+Two places in the model code name a technique after the project it came from. In both cases the
+idea is credited in the comment and the implementation was written here.
 
 - `_model/embedding.py`, `FourierFeatureEmbedding`: "Causilo-style" learnable Fourier feature
   embedding. Idea from Causilo (https://github.com/nums-ai/causilo).
 - `_model/embedding.py`, `ColInteraction`: the output projection and normalization after a
   column-interaction stage is marked "Follow TabFM". Idea from TabFM
   (https://github.com/google-research/tabfm).
-
-If a maintainer reads either comment as implying copied code, the comment is what needs
-changing, not the provenance: there is no file to add to the list above.

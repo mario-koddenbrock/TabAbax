@@ -120,7 +120,7 @@ tests/test_import.py          public import check
 
 ## Benchmark
 
-`benchmark/README.md` has the TabArena and BeyondArena commands. `main.py` runs the jobs and `evaluate.py` prints the leaderboard from the pickles that run writes. The 2026-10-26 per-split rows for both benchmarks are committed in `results/`; the TabArena and BeyondArena revisions and the machine versions were not kept, so a rerun reproduces the procedure rather than the exact numbers.
+`benchmark/README.md` has the TabArena and BeyondArena commands. `main.py` runs the jobs and `evaluate.py` prints the leaderboard from the pickles that run writes. The 2026-10-26 per-split rows for both benchmarks are committed in `results/`; the TabArena and BeyondArena revisions and the software versions were not kept, so a rerun reproduces the procedure rather than the exact numbers.
 
 ## Relationship to TabICL
 
@@ -150,7 +150,8 @@ the detail.
   linear input mapping.
 - **Row interaction that keeps everything** (`RowInteraction`, `_model/interaction.py`). The
   first row-interaction stage retains every feature and the CLS token representation rather than
-  collapsing to a summary, so the following stages still see the untouched feature set.
+  collapsing to a summary, so the following stages still see the full sequence of contextualized
+  feature and CLS representations.
 - **A second column/row interaction round** (`ColInteraction`, `_model/embedding.py`). After the
   first row interaction there is a second column stage, then a second row stage, before the
   in-context prediction head runs.
@@ -162,12 +163,11 @@ the detail.
 
 ### Method references
 
-Two comments name where an idea came from. Neither borrows code: nothing in this repository
-imports `causilo` or `tabfm`, and no source from those projects is vendored here.
+Two comments name where an idea came from. In both cases we took the method and wrote the
+implementation ourselves against this codebase.
 
 - `FourierFeatureEmbedding` is described in the code as "Causilo-style". The learnable Fourier
-  feature map follows the approach used by [Causilo](https://github.com/nums-ai/causilo), a
-  causal-discovery method, not its implementation.
+  feature map follows the approach used by [Causilo](https://github.com/nums-ai/causilo), a pretrained tabular foundation model for classification and regression.
 - The output projection and normalization after each column-interaction stage is marked "Follow
   TabFM". That is the post-stage projection used by
   [TabFM](https://github.com/google-research/tabfm), re-implemented here against this codebase's
