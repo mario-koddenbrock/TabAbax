@@ -1,8 +1,8 @@
 """Run TabAbax on TabArena v0.1.
 
-Same bundle settings as the 2026-10-26 run: one manual config, the full
-training table as context (no bagging), the default preprocessing pipeline,
-and no feature shuffle. Classification and regression load separate checkpoints.
+One manual config, the full training table as context (no bagging), the default
+preprocessing pipeline, and no feature shuffle. Classification and regression
+load separate checkpoints.
 """
 
 import argparse

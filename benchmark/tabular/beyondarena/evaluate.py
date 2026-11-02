@@ -1,7 +1,7 @@
 """Print a BeyondArena leaderboard from local result files. This script does not draw figures.
 
 Result pickles are produced by ``main.py`` and are not committed. The comparison
-arguments are the ones used on the H20 run, with ``plot=False``.
+arguments are the ones used for the scored run, with ``plot=False``.
 """
 
 from pathlib import Path

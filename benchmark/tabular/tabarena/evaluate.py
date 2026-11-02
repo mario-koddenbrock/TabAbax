@@ -1,8 +1,7 @@
 """Print a TabArena leaderboard from local result files. This script does not draw figures.
 
-Result pickles are produced by ``main.py`` and are not committed. NVIDIA's
-``evaluate.py`` is the same kind of second step. The comparison arguments are
-the ones used on the H20 run, with ``plot=False``.
+Result pickles are produced by ``main.py`` and are not committed. The comparison
+arguments are the ones used for the scored run, with ``plot=False``.
 """
 
 from pathlib import Path

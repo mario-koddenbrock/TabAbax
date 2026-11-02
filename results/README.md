@@ -1,11 +1,10 @@
 # Results recorded on 2026-10-26
 
 The figure `docs/beyondarena_elo.png` and the numbers below come from an internal comparison.
-In those tables the method is named `Bairong-Tabular`. That is this model under the name used for the run.
 The raw per-split files, the official baseline cache, and the code that drew the figure are not in this repository.
 `benchmark/` contains the run and leaderboard commands, without the plotting code.
 
-The position below is the place of `Bairong-Tabular` when the printed table is sorted by Elo.
+The position column is the place of this model when the printed table is sorted by Elo.
 The average rank is the `rank` column of that same table. The two are not the same number.
 
 ## BeyondArena, core protocol
@@ -18,7 +17,7 @@ The average rank is the `rank` column of that same table. The two are not the sa
 | classification | 98 | 1218.8 | 30.2 | 33.7 | 16.26 | 11 |
 | regression | 44 | 1286.7 | 64.7 | 43.2 | 13.47 | 8 |
 
-The label on the source note is `Bairong-Tabular (default)`.
+The source note for these figures is `default`.
 
 ## TabArena
 

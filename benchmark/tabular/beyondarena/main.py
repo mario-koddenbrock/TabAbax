@@ -1,8 +1,8 @@
 """Run TabAbax on BeyondArena.
 
-Same bundle settings as the 2026-10-26 run: the core subset, one manual
-config, ``tabarena_default`` preprocessing, required text cache, and no
-feature shuffle. The default subset is ``core`` plus the problem type.
+The core subset, one manual config, ``tabarena_default`` preprocessing, required
+text cache, and no feature shuffle. The default subset is ``core`` plus the
+problem type.
 """
 
 import argparse

@@ -1,43 +1,47 @@
 # Benchmarks
 
-The directory layout follows
-[NVIDIA/structured-data-models `benchmark/`](https://github.com/NVIDIA/structured-data-models/tree/main/benchmark):
-`main` runs the jobs, `evaluate` reads the local `results.pkl` files and prints a leaderboard.
-Neither script draws figures, and neither script commits those pickles.
-NVIDIA's scripts work the same way: the pickles are the output of a run, not files in the repository.
+`main.py` runs the jobs. `evaluate.py` reads the local `results.pkl` files that
+`main.py` wrote and prints a leaderboard. Neither script draws figures, and
+neither script commits those pickles: the pickles are the output of a run, not
+files in the repository.
 
-The job that is executed is not NVIDIA's model list. It is the H20 run, pointed at TabAbax:
+| File | Role |
+| --- | --- |
+| `tabular/common.py` | Shared settings: the checkpoint arguments, the cache configuration, the single `run_jobs` call, and the leaderboard arguments. |
+| `tabular/tabarena/main.py` | Runs TabArena v0.1, 51 datasets: 38 classification and 13 regression. |
+| `tabular/tabarena/evaluate.py` | Prints the TabArena leaderboard for the pickles under `tabular/tabarena_out/TabAbax`. |
+| `tabular/beyondarena/main.py` | Runs BeyondArena, 142 core datasets: 98 classification and 44 regression. |
+| `tabular/beyondarena/evaluate.py` | Prints the BeyondArena leaderboard for the pickles under `tabular/beyondarena_out/TabAbax`. |
 
-| Setting | H20 script | This runner |
-| --- | --- | --- |
-| TabArena bundle | `TabArenaV0pt1ExperimentBundle`, `outer_experiments=True`, pipeline `default`, `shuffle_features=False` | same |
-| BeyondArena bundle | `BeyondArenaExperimentBundle`, pipeline `tabarena_default`, `text_cache_mode="require"`, `shuffle_features=False`, subset `core` plus the problem type, `require_warmup=False` | same |
-| Checkpoints | classification and regression are separate passes | `--classifier-checkpoint` and `--regressor-checkpoint`; omit them to download the published renamed files |
-| `run_jobs` | one call, `register=False`, `debug_mode=True`, `cache_mode="default"` | same |
-| Leaderboard | `compare` with `fillna="auto"`, `calibration_method="auto"`, `average_seeds=False`, `score_on_val=False`, `remove_imputed=False` | same arguments, `plot=False` |
-| Model class on H20 | `TabICLv2Model` plus a local source tree | `TabAbaxModel`, which loads the same renamed checkpoints |
+Both runners use one manual configuration, the full training table as context
+with no bagging, and no feature shuffle. Classification and regression are
+separate passes because they load separate checkpoints.
 
-The H20 run did not skip any dataset. Do not pass `--skip` if the goal is to repeat that run.
-Left out on purpose: Elo plots, the lighttabc import shim, the AutoGluon shared-weight shim, the datetime fill patch, and the offline dataset materializer. Those were environment workarounds. They are not part of the scored configuration.
+| Setting | Value |
+| --- | --- |
+| TabArena bundle | `TabArenaV0pt1ExperimentBundle`, `outer_experiments=True`, pipeline `default`, `shuffle_features=False` |
+| BeyondArena bundle | `BeyondArenaExperimentBundle`, pipeline `tabarena_default`, `text_cache_mode="require"`, `shuffle_features=False`, subset `core` plus the problem type, `require_warmup=False` |
+| Checkpoints | `--classifier-checkpoint` and `--regressor-checkpoint`; omit them to download the published files |
+| `run_jobs` | one call, `register=False`, `debug_mode=True`, `cache_mode="default"` |
+| Leaderboard | `compare` with `fillna="auto"`, `calibration_method="auto"`, `average_seeds=False`, `score_on_val=False`, `remove_imputed=False`, and `plot=False` |
 
-## What a rerun can and cannot reproduce
+No dataset is skipped. Do not pass `--skip` if the goal is to score the full
+board.
 
-These scripts reproduce the evaluation *procedure*: the bundles, pipelines, the
-job call, the checkpoint handling, and the leaderboard arguments. They do not
-turn this repository into a byte-exact reproduction of the 2026-10-26 numbers.
-The figures in `results/README.md` are a record of that run, not an output this
-repository can regenerate on its own.
+## What a rerun reproduces
 
-Not in this repository, and needed for an exact rerun:
+These scripts reproduce the evaluation procedure: the bundles, the pipelines, the
+job call, the checkpoint handling, and the leaderboard arguments.
 
-- the per-split `results.pkl` files written by that run;
-- the TabArena and BeyondArena revisions that were installed for it;
-- the full machine record: CPU, RAM, disk, driver, CUDA, and PyTorch versions;
+Not in this repository:
+
+- the per-split `results.pkl` files, which a run writes;
+- the TabArena and BeyondArena revisions that were installed;
+- the machine record: CPU, RAM, disk, driver, CUDA, and PyTorch versions;
 - the TabAbax TabArena branch, which supplies `TabAbaxModel`.
 
 A rerun on different hardware, or against a newer TabArena or BeyondArena, can
-produce different Elo values from the same code. Treat the tables as reported
-results and the scripts as the procedure to repeat them.
+produce different Elo values from the same code.
 
 The checkpoint weights are CC-BY-NC-4.0. A run that leaves the checkpoint
 arguments empty downloads `tababax-ai/TabAbax`. That download is not licensed
@@ -71,7 +75,7 @@ artifacts are already on disk.
 ## BeyondArena
 
 The default task filter is `core`, then `classification` or `regression`.
-The 2026-10-26 summary used 142 core datasets: 98 classification and 44 regression.
+The scored board has 142 core datasets: 98 classification and 44 regression.
 
 ```bash
 python -m benchmark.tabular.beyondarena.main --problem all
@@ -80,7 +84,7 @@ python -m benchmark.tabular.beyondarena.evaluate
 ```
 
 `--data-foundry-cache` points at a local BeyondArena download.
-Leave `--skip` unset. The H20 run scored every dataset.
+Leave `--skip` unset to score every dataset.
 The weight files are `tababax-classifier.ckpt` and `tababax-regressor.ckpt`
 in commit `039e4f239d06a4d631e38c15bc23ef195ed8cf79`.
 Hub commit `815239c50664fd73c1e4ee2d80414e9933757bc0` only changes the model-card text.

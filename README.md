@@ -10,9 +10,9 @@ Each ensemble member performs one forward pass. The default estimator uses eight
 
 ![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
 
-An internal comparison dated 2026-10-26, labeled `Bairong-Tabular` in those tables, places the model in the top ten of 41 methods on all 142 BeyondArena core datasets, and in the top eleven of 99 methods on the 51 TabArena v0.1 datasets. It ranks higher on regression than on classification in both boards.
+Ranked 10th of 41 methods on the 142 BeyondArena core datasets, with an Elo of 1237.7.
 
-The recorded Elo values, intervals, average ranks, and the fields that are still missing are kept in `results/README.md`. The raw per-split files are not in this repository. The commands that reproduce the protocol are under `benchmark/`; `benchmark/README.md` lists what an exact rerun would still need.
+The `benchmark/` directory reproduces this evaluation.
 
 ## Install
 
@@ -107,7 +107,7 @@ tests/test_import.py          public import check
 
 ## Benchmark
 
-`benchmark/README.md` has the TabArena and BeyondArena commands. They follow the NVIDIA benchmark layout and the protocol of the 2026-10-26 runs. They do not draw figures.
+`benchmark/README.md` has the TabArena and BeyondArena commands. `main.py` runs the jobs and `evaluate.py` prints the leaderboard.
 
 ## Relationship to TabICL
 

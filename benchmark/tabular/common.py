@@ -1,9 +1,8 @@
-"""Shared TabArena runner settings used by the 2026-10-26 TabAbax runs.
+"""Shared settings for the TabArena and BeyondArena runners.
 
-The layout matches NVIDIA's structured-data-models benchmark scripts.
-The experiment arguments below are the ones those runs actually set.
-Machine-specific patches from the notebooks (offline dataset materialization,
-datetime fill, shared-weight shims, Elo plots) are not included.
+Each runner builds one manual configuration and passes the whole job list to a
+single ``run_jobs`` call. Plotting, dataset materialization workarounds, and the
+shared-weight shims from the original notebooks are not included.
 """
 
 from __future__ import annotations
@@ -43,10 +42,9 @@ def manual_config(checkpoint: str | None) -> dict:
 
 
 def run_jobs(context, jobs, result_dir: Path) -> list:
-    """Run the whole job list in one call, as the H20 scripts did.
+    """Run the whole job list in one call.
 
-    The NVIDIA example loops one job at a time and clears the CUDA cache.
-    The published numbers came from a single ``run_jobs`` call:
+    The whole list goes to a single ``run_jobs`` call:
 
     - ``register=False``, so a later classification or regression pass is not
       given a task list cut down by the first pass;
@@ -66,7 +64,7 @@ def run_jobs(context, jobs, result_dir: Path) -> list:
 
 
 def compare_kwargs(output_dir: Path, subset: list[str]) -> dict:
-    """Leaderboard arguments from the H20 scripts, with plotting turned off."""
+    """Leaderboard arguments used for the scored run, with plotting turned off."""
     return {
         "output_dir": output_dir,
         "subset": subset,
