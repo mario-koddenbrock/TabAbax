@@ -48,6 +48,7 @@ LICENSE_FILES = [
     "LICENSES/Apache-2.0.txt",
     "LICENSES/BSD-3-Clause.txt",
     "LICENSES/MIT.txt",
+    "LICENSES/scikit-learn-BSD-3-Clause.txt",
     "PROVENANCE.md",
 ]
 
@@ -96,6 +97,25 @@ def test_license_files_exist_on_disk():
         path = ROOT / name
         assert path.is_file(), name
         assert path.stat().st_size > 0, name
+
+
+def test_scikit_learn_copyright_line_is_reproduced_not_linked():
+    """BSD-3-Clause clause 1/2 requires the notice itself, not a URL to it.
+
+    A pointer to the upstream repository reads as attribution but does not satisfy
+    the clause, since the copyright line is what has to travel with a
+    redistribution. Check the line and the warranty text are in the repository.
+    """
+    text = (ROOT / "LICENSES/scikit-learn-BSD-3-Clause.txt").read_text(encoding="utf-8")
+    assert "Copyright (c) 2007-2024 The scikit-learn developers." in text
+    assert "All rights reserved." in text
+    assert "Redistribution and use in source and binary forms" in text
+    assert "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS" in text
+
+    notice = (ROOT / "NOTICE").read_text(encoding="utf-8")
+    scikit_learn_section = notice.split("scikit-learn:")[1]
+    assert "Copyright (c) 2007-2024 The scikit-learn developers." in scikit_learn_section
+    assert "scikit-learn-BSD-3-Clause.txt" in scikit_learn_section
 
 
 def test_license_index_is_not_apache_only():

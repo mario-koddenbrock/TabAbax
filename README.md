@@ -8,9 +8,15 @@ This repository contains inference code and the benchmark entry points under `be
 
 Each ensemble member performs one forward pass. The default estimator uses eight dataset-view ensemble members.
 
-![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
+![Internal BeyondArena Elo comparison, top 15 of 41 methods on all 142 core2k datasets](docs/beyondarena_elo.png)
 
 Ranked 10th of 41 methods on the 142 BeyondArena core2k datasets, with an Elo of 1237.7.
+
+These are internal comparison numbers from 2026-10-26, not an official BeyondArena
+leaderboard result. They have not been verified by the TabArena maintainers: the Elo is
+computed against baseline results in the official cache, and the committed per-split rows
+under `results/` hold the TabAbax rows only, so the Elo cannot be recomputed from them
+alone. Treat the position as where we landed in our own table.
 
 The numbers come from a run on 2026-10-26. The per-split results of both benchmarks are in `results/`, and `benchmark/` documents and runs the evaluation procedure. Exact reproduction of the reported scores is not guaranteed; see `results/README.md` for what was and was not kept.
 
@@ -131,6 +137,45 @@ These modules are derived from [TabICL](https://github.com/soda-inria/tabicl), C
 - `src/tababax/_sklearn/preprocessing.py`
 - `src/tababax/_sklearn/sklearn_utils.py`
 - `src/tababax/_torch_devices.py`
+
+### What we changed in the model
+
+Renaming the public API is an interface change, not a modelling contribution. The modelling
+changes are the ones below; `PROVENANCE.md` gives the per-file breakdown, and the code carries
+the detail.
+
+- **Learnable Fourier feature embedding** (`FourierFeatureEmbedding`, `_model/embedding.py`).
+  Features are grouped, and each group is embedded by learnable Fourier features — a per-value
+  frequency bank with `[sin, cos]` expansion into a learned projection — instead of TabICL's
+  linear input mapping.
+- **Row interaction that keeps everything** (`RowInteraction`, `_model/interaction.py`). The
+  first row-interaction stage retains every feature and the CLS token representation rather than
+  collapsing to a summary, so the following stages still see the untouched feature set.
+- **A second column/row interaction round** (`ColInteraction`, `_model/embedding.py`). After the
+  first row interaction there is a second column stage, then a second row stage, before the
+  in-context prediction head runs.
+- **Memory handling under pressure** (`_model/inference.py`). On top of TabICL's offload
+  machinery (`OffloadConfig`, `MemoryEstimator`, `DiskTensor`), a patch estimates the forward
+  peak for the batch actually about to run, moves already-computed outputs off the GPU when the
+  estimate does not fit, and on a real OOM retries once with the output moved to disk. The file
+  is therefore a modified derivative, not a renamed copy.
+
+### Method references
+
+Two comments name where an idea came from. Neither borrows code: nothing in this repository
+imports `causilo` or `tabfm`, and no source from those projects is vendored here.
+
+- `FourierFeatureEmbedding` is described in the code as "Causilo-style". The learnable Fourier
+  feature map follows the approach used by [Causilo](https://github.com/nums-ai/causilo), a
+  causal-discovery method, not its implementation.
+- The output projection and normalization after each column-interaction stage is marked "Follow
+  TabFM". That is the post-stage projection used by
+  [TabFM](https://github.com/google-research/tabfm), re-implemented here against this codebase's
+  layer types.
+
+If either of these should be cited differently — or if the maintainers would rather see the
+comments reworded to drop the project names — tell us and we will change them. We would rather
+over-attribute an idea than imply a lineage we cannot support.
 
 `preprocessing.py` also contains TabR (MIT) and PyTabKit (Apache-2.0) portions. `sklearn_utils.py` contains scikit-learn (BSD-3-Clause) portions. `src/tababax/_model/rope.py` contains rotary-embedding-torch (MIT) portions. See `NOTICE` and `PROVENANCE.md`.
 

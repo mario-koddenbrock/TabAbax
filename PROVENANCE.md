@@ -95,7 +95,22 @@ with additional architectural and prior changes.
 
 - rotary-embedding-torch: MIT, Copyright (c) 2021 Phil Wang
 - scikit-learn: BSD-3-Clause, commit 1eb422d6c5 of sklearn/utils/validation.py
+  (full license and copyright line in LICENSES/scikit-learn-BSD-3-Clause.txt)
 - TabR: MIT, commit 75105013189c76bc4f247633c2fb856bc948e579
 - PyTabKit: Apache-2.0, commit 949bf81e3964f65a33dd2c252c3713c239c17b2d
 
 See NOTICE for the applicable notices and license texts.
+
+## Methods referenced but not copied
+
+Two places in the model code name a technique after the project it came from. No code from
+either project is vendored here and nothing imports them; the comments credit the idea.
+
+- `_model/embedding.py`, `FourierFeatureEmbedding`: "Causilo-style" learnable Fourier feature
+  embedding. Idea from Causilo (https://github.com/nums-ai/causilo).
+- `_model/embedding.py`, `ColInteraction`: the output projection and normalization after a
+  column-interaction stage is marked "Follow TabFM". Idea from TabFM
+  (https://github.com/google-research/tabfm).
+
+If a maintainer reads either comment as implying copied code, the comment is what needs
+changing, not the provenance: there is no file to add to the list above.

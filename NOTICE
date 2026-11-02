@@ -61,7 +61,12 @@ scikit-learn:
 
 https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/utils/validation.py
 
+Copyright (c) 2007-2024 The scikit-learn developers.
+All rights reserved.
+
 The adapted portions are distributed under the BSD 3-Clause License.
+The complete scikit-learn license, copyright line included, is reproduced in
+LICENSES/scikit-learn-BSD-3-Clause.txt and ships with the package.
 
 Parts of src/tababax/_sklearn/preprocessing.py are adapted from:
 

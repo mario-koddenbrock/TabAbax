@@ -188,6 +188,41 @@ def test_readme_points_at_the_artifacts(beyond):
         assert path.name in text, path.name
 
 
+def test_the_scores_are_declared_internal_not_official():
+    """A reviewer read the Elo table as a verified leaderboard rank.
+
+    The rows are TabAbax only, so a reader cannot recompute the Elo from the files.
+    Keep the disclaimer next to the numbers, in both the results README and the
+    top-level one, so the claim cannot quietly turn into "ranked 10th" again.
+    """
+    results = (RESULTS / "README.md").read_text(encoding="utf-8")
+    flat_results = " ".join(results.split()).lower()
+    assert "internal comparison" in flat_results
+    assert "not an official" in flat_results
+    assert "2026-10-26" in flat_results
+
+    top = (ROOT / "README.md").read_text(encoding="utf-8")
+    flat_top = " ".join(top.split()).lower()
+    assert "not an official" in flat_top
+    assert "internal" in flat_top
+
+
+def test_the_results_readme_names_the_hardware_it_kept():
+    """The original PR stated the machine; the results note has to agree with it.
+
+    Saying nothing was recorded next to a stated H20 configuration reads as a
+    contradiction. Hardware is known, the pinned software versions are not.
+    """
+    text = (RESULTS / "README.md").read_text(encoding="utf-8")
+    flat = " ".join(text.split())
+    assert "H20" in flat
+    assert "8480" in flat
+    assert "1 TB" in flat
+    lowercase = flat.lower()
+    assert "not kept" in lowercase or "not recorded" in lowercase
+    assert "cuda" in lowercase or "pytorch" in lowercase
+
+
 def test_sdist_ships_the_artifacts():
     # The sdist uses an explicit include list, so a new results file is silently
     # left out unless the results directory is listed as a whole.

@@ -65,8 +65,21 @@ The classification and regression notes do not print a dataset count. The runner
 
 ## Run record
 
-The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped.
-The weights are the checkpoints now published at
+The 2026-10-26 comparison ran on one NVIDIA H20 96 GB with two Intel Xeon
+Platinum 8480+ CPUs, 1 TB of RAM and a 2 TB system disk. That is the machine the
+original pull request reported, and it is the machine these numbers come from.
+What was not kept is the software record: the TabArena and BeyondArena commits
+that were installed, the CUDA, driver and PyTorch versions, and the code that
+drew the figure. The hardware is known; the pinned software state is not.
+
+These are **internal comparison numbers, not an official leaderboard rank**.
+The Elo values come from comparing TabAbax against baseline results in the
+official cache on 2026-10-26. They are not verified by the TabArena maintainers,
+and the "10th of 41" position is the place in that internal table, not a rank
+the project publishes or endorses. The committed parquet files hold the TabAbax
+rows only, so the Elo column cannot be recomputed from them alone.
+
+No dataset was skipped. The weights are the checkpoints now published at
 [tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax)
 under the filenames `tababax-classifier.ckpt` and `tababax-regressor.ckpt`.
 They were renamed for release. The weight upload is commit
