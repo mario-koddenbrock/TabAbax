@@ -19,8 +19,7 @@ https://github.com/soda-inria/tabicl
 The TabICL-derived inference portions remain under the BSD 3-Clause License.
 The checkpoint weights in this repository are distributed under CC-BY-NC-4.0 and are not licensed for commercial use.
 
-This file is the model card to upload to https://huggingface.co/tababax-ai/TabAbax.
-It is not yet the live model card. The inference code is derived from TabICL v2.2.0, commit 0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3.
+The inference code is derived from TabICL v2.2.0, commit 0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3.
 
 ## Relationship to TabICL
 
@@ -42,7 +41,7 @@ Research and non-commercial evaluation of tabular classification and regression 
 
 Results depend on dataset preprocessing, ensemble settings, hardware, and benchmark version. The reported results should not be interpreted as a guarantee on unseen datasets.
 
-The BeyondArena and TabArena numbers in the code repository are an internal comparison dated 2026-10-26. The raw per-split files, hardware record, seeds, benchmark commit, and checkpoint hash are not published with them. See `results/README.md` in https://github.com/tababax-research/TabAbax.
+The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped. The weights are the renamed files in this repository. Per-split `results.pkl` files are produced by `benchmark/tabular/*/main.py` and are not committed. See `results/README.md` in https://github.com/tababax-research/TabAbax.
 
 ## Citation
 
