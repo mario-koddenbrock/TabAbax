@@ -10,17 +10,27 @@ files in the repository.
 | `tabular/common.py` | Shared settings: the checkpoint arguments, the cache configuration, the single `run_jobs` call, and the leaderboard arguments. |
 | `tabular/tabarena/main.py` | Runs TabArena v0.1, 51 datasets: 38 classification and 13 regression. |
 | `tabular/tabarena/evaluate.py` | Prints the TabArena leaderboard for the pickles under `tabular/tabarena_out/TabAbax`. |
-| `tabular/beyondarena/main.py` | Runs BeyondArena, 142 core datasets: 98 classification and 44 regression. |
+| `tabular/beyondarena/main.py` | Runs BeyondArena core2k, 142 datasets: 98 classification and 44 regression. |
 | `tabular/beyondarena/evaluate.py` | Prints the BeyondArena leaderboard for the pickles under `tabular/beyondarena_out/TabAbax`. |
 
 Both runners use one manual configuration, the full training table as context
 with no bagging, and no feature shuffle. Classification and regression are
 separate passes because they load separate checkpoints.
 
+BeyondArena splits come from its `core2k` subset. Pass it explicitly:
+
+```bash
+python -m benchmark.tabular.beyondarena.main --problem all --subset core2k
+```
+
+`core2k` is a subset registered by the installed BeyondArena build; it widens the
+`core` subset to 2000 splits. Without `--subset`, `main.py` falls back to `core`,
+which is a narrower board and will not reproduce the 2000 splits in `results/`.
+
 | Setting | Value |
 | --- | --- |
 | TabArena bundle | `TabArenaV0pt1ExperimentBundle`, `outer_experiments=True`, pipeline `default`, `shuffle_features=False` |
-| BeyondArena bundle | `BeyondArenaExperimentBundle`, pipeline `tabarena_default`, `text_cache_mode="require"`, `shuffle_features=False`, subset `core` plus the problem type, `require_warmup=False` |
+| BeyondArena bundle | `BeyondArenaExperimentBundle`, pipeline `tabarena_default`, `text_cache_mode="require"`, `shuffle_features=False`, subset `core2k` plus the problem type, `require_warmup=False` |
 | Checkpoints | `--classifier-checkpoint` and `--regressor-checkpoint`; omit them to download the published files |
 | `run_jobs` | one call, `register=False`, `debug_mode=True`, `cache_mode="default"` |
 | Leaderboard | `compare` with `fillna="auto"`, `calibration_method="auto"`, `average_seeds=False`, `score_on_val=False`, `remove_imputed=False`, and `plot=False` |
@@ -74,8 +84,8 @@ artifacts are already on disk.
 
 ## BeyondArena
 
-The default task filter is `core`, then `classification` or `regression`.
-The scored board has 142 core datasets: 98 classification and 44 regression.
+The task filter is `core2k`, then `classification` or `regression`.
+The scored board has 142 datasets and 2000 splits: 98 classification and 44 regression.
 
 ```bash
 python -m benchmark.tabular.beyondarena.main --problem all

@@ -10,9 +10,9 @@ Each ensemble member performs one forward pass. The default estimator uses eight
 
 ![BeyondArena Elo, top 15 of 41 methods on all 142 datasets](docs/beyondarena_elo.png)
 
-Ranked 10th of 41 methods on the 142 BeyondArena core datasets, with an Elo of 1237.7.
+Ranked 10th of 41 methods on the 142 BeyondArena core2k datasets, with an Elo of 1237.7.
 
-`benchmark/` documents and runs the evaluation procedure. Exact reproduction of the reported scores is not guaranteed; see `results/README.md` for the run artifacts and environment details that were not kept.
+The numbers come from a run on 2026-10-26. The per-split results of both benchmarks are in `results/`, and `benchmark/` documents and runs the evaluation procedure. Exact reproduction of the reported scores is not guaranteed; see `results/README.md` for what was and was not kept.
 
 ## Install
 
@@ -107,7 +107,7 @@ tests/test_import.py          public import check
 
 ## Benchmark
 
-`benchmark/README.md` has the TabArena and BeyondArena commands. `main.py` runs the jobs and `evaluate.py` prints the leaderboard from the pickles that run writes. Those pickles, and the TabArena and BeyondArena revisions and machine versions used on 2026-10-26, were not kept, so a rerun reproduces the procedure rather than the exact numbers.
+`benchmark/README.md` has the TabArena and BeyondArena commands. `main.py` runs the jobs and `evaluate.py` prints the leaderboard from the pickles that run writes. The 2026-10-26 per-split rows for both benchmarks are committed in `results/`; the TabArena and BeyondArena revisions and the machine versions were not kept, so a rerun reproduces the procedure rather than the exact numbers.
 
 ## Relationship to TabICL
 

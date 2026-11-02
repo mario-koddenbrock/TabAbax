@@ -1,8 +1,8 @@
 """Run TabAbax on BeyondArena.
 
-The core subset, one manual config, ``tabarena_default`` preprocessing, required
-text cache, and no feature shuffle. The default subset is ``core`` plus the
-problem type.
+The core2k subset, one manual config, ``tabarena_default`` preprocessing, required
+text cache, and no feature shuffle. The default subset is ``core2k`` plus the
+problem type, which is the 2000-split board recorded in ``results/``.
 """
 
 import argparse
@@ -43,7 +43,7 @@ def _one(
         experiment.experiment_kwargs["require_warmup"] = False
     jobs = context.build_jobs(
         experiments,
-        subset=subset or ["core", problem],
+        subset=subset or ["core2k", problem],
         dataset_names=[dataset] if dataset else None,
     )
     if skip:
