@@ -36,17 +36,20 @@ The classification and regression notes do not print a dataset count. The runner
 
 The 2026-10-26 comparison ran on NVIDIA H20. No dataset was skipped.
 The weights are the checkpoints now published at
-[tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax),
-revision `039e4f239d06a4d631e38c15bc23ef195ed8cf79`,
+[tababax-ai/TabAbax](https://huggingface.co/tababax-ai/TabAbax)
 under the filenames `tababax-classifier.ckpt` and `tababax-regressor.ckpt`.
-They were renamed for release. They are CC-BY-NC-4.0.
+They were renamed for release. The weight upload is commit
+`039e4f239d06a4d631e38c15bc23ef195ed8cf79`.
+A later Hub commit, `815239c50664fd73c1e4ee2d80414e9933757bc0`,
+only updates the model-card README. The weight files were not downloaded again
+for this note. They are CC-BY-NC-4.0.
 
-`benchmark/tabular/*/evaluate.py` reads `results.pkl` from a local run
-directory and prints a leaderboard. Those pickles are not part of this
-repository. The NVIDIA benchmark scripts work the same way: they evaluate
-local result files and do not commit them.
+`benchmark/tabular/*/main.py` is the command that runs the jobs.
+`evaluate.py` reads the `results.pkl` files that command writes and prints the
+leaderboard. Those pickles are run outputs. They are not committed, which is
+also how the NVIDIA benchmark scripts treat them. Running `main.py` is the
+reproduction step.
 
 Not recorded with the 2026-10-26 notes: the TabArena and BeyondArena
-commits, CPU, RAM, disk, CUDA, PyTorch, and the random seed. The runner
-uses the estimator default `random_state=42` when the caller does not
-override it.
+commits, CPU, RAM, disk, CUDA, and PyTorch versions. The runner uses the
+estimator default `random_state=42` when the caller does not override it.

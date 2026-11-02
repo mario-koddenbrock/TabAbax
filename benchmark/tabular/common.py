@@ -42,26 +42,39 @@ def manual_config(checkpoint: str | None) -> dict:
     return {"model_path": str(path.resolve()), "allow_auto_download": False}
 
 
-def run_jobs(context, jobs, result_dir: Path) -> None:
-    """Run each job on its own, without registering or plotting.
+def run_jobs(context, jobs, result_dir: Path) -> list:
+    """Run the whole job list in one call, as the H20 scripts did.
 
-    ``cache_mode='default'`` skips a split when its results file is already on disk.
-    ``register=False`` keeps a later classification or regression pass from
-    seeing a task list that was cut down by the first pass.
+    The NVIDIA example loops one job at a time and clears the CUDA cache.
+    The published numbers came from a single ``run_jobs`` call:
+
+    - ``register=False``, so a later classification or regression pass is not
+      given a task list cut down by the first pass;
+    - ``debug_mode=True``, so a failed split is raised instead of recorded as a skip;
+    - ``cache_mode='default'``, so an existing ``results.pkl`` is reused.
     """
-    import torch
-
     result_dir.mkdir(parents=True, exist_ok=True)
-    for job in jobs:
-        try:
-            context.run_jobs(
-                jobs=[job],
-                expname=result_dir,
-                register=False,
-                cache_mode="default",
-            )
-        finally:
-            gc.collect()
-            if torch.cuda.is_initialized():
-                torch.cuda.synchronize()
-                torch.cuda.empty_cache()
+    results = context.run_jobs(
+        jobs,
+        expname=result_dir,
+        register=False,
+        debug_mode=True,
+        cache_mode="default",
+    )
+    gc.collect()
+    return list(results)
+
+
+def compare_kwargs(output_dir: Path, subset: list[str]) -> dict:
+    """Leaderboard arguments from the H20 scripts, with plotting turned off."""
+    return {
+        "output_dir": output_dir,
+        "subset": subset,
+        "plot": False,
+        "return_results": True,
+        "fillna": "auto",
+        "calibration_method": "auto",
+        "average_seeds": False,
+        "score_on_val": False,
+        "remove_imputed": False,
+    }
