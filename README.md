@@ -196,7 +196,7 @@ If you use this model in your research, please cite our technical report:
 ```bibtex
 @article{cheng2026tababax,
   title={TabAbax: A Tabular Foundation Model Technical Report},
-  author={Cheng, Zhixiong and Gao, Xiaoyun and Han, Shiyuan and Suo, Jingjing and Wang, Zhengli},
+  author={Zhixiong Cheng and Xiaoyun Gao and Shiyuan Han and Jingjing Suo and Zhengli Wang},
   journal={arXiv preprint arXiv:2611.00562},
   year={2026}
 }
