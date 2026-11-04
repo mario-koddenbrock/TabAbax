@@ -1,6 +1,6 @@
 # TabAbax
 
-Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. Each ensemble member runs one forward pass of a pretrained model. The default estimator uses eight dataset-view ensemble members. The model weights are not updated.
+TabAbax is a pretrained tabular foundation model developed by the Tabular Model R&D Team at BaiRong Intelligent Technology. Scikit-learn estimators for tabular classification and regression. `fit` stores the training table as context. Each ensemble member runs one forward pass of a pretrained model. The default estimator uses eight dataset-view ensemble members. The model weights are not updated.
 
 This repository contains inference code and the benchmark entry points under `benchmark/`. It does not contain pre-training code, synthetic prior generation, training datasets, optimizer configuration, or checkpoint-generation scripts. The released checkpoints were trained from a TabICLv2-derived implementation with additional architectural and prior changes.
 
@@ -190,3 +190,13 @@ PyTabKit-derived portions and TabAbax packaging are Apache-2.0. See `LICENSES/Ap
 The root `LICENSE` file is an index of these licenses. It does not mean the whole repository is Apache-2.0.
 
 The pretrained weights are CC-BY-NC-4.0 and are restricted to non-commercial use. The Hugging Face model card at https://huggingface.co/tababax-ai/TabAbax is kept in sync with `docs/huggingface_model_card.md` in this repository.
+
+## Citation
+If you use this model in your research, please cite our technical report:
+```bibtex
+@article{cheng2026tababax,
+  title={TabAbax: A Tabular Foundation Model Technical Report},
+  author={Cheng, Zhixiong and Gao, Xiaoyun and Han, Shiyuan and Suo, Jingjing and Wang, Zhengli},
+  journal={arXiv preprint arXiv:2611.00562},
+  year={2026}
+}
