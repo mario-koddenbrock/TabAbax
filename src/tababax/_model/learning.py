@@ -395,7 +395,7 @@ class ICLearning(nn.Module):
                     y_train=node_y.unsqueeze(0),
                     softmax_temperature=softmax_temperature,
                     auto_batch=False,
-                ).squeeze(0)
+                ).squeeze(0).to(device)
                 # Map leaf predictions to the global class space
                 global_preds = torch.zeros((test_size, num_classes), device=device)
                 for local_idx, global_idx in enumerate(node.classes_):
@@ -414,7 +414,7 @@ class ICLearning(nn.Module):
                 y_train=node_y.unsqueeze(0),
                 softmax_temperature=softmax_temperature,
                 auto_batch=False,
-            ).squeeze(0)
+            ).squeeze(0).to(device)
 
             # Recursively process child nodes and combine predictions
             for group_idx, child_node in enumerate(node.child_nodes):

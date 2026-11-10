@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed a device mismatch in hierarchical classification (datasets with more classes than `max_classes`): `_predict_hierarchical` accumulated probabilities on the device of the input rows, but the inference manager can return `_predict_standard`'s output on another device (CUDA while the rows sit on the CPU after `offload`), which raised `RuntimeError: Expected all tensors to be on the same device`. The per-node predictions are now moved to the rows' device. Predictions are unchanged.
 - Added `checkpoint_revision` to `TabAbaxClassifier` and `TabAbaxRegressor`. Passing a commit
   resolves every `hf_hub_download` call for the checkpoint against it, so a run keeps loading the
   bytes it was measured on instead of following the Hub repository's moving default branch. The
